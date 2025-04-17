@@ -10,6 +10,8 @@ Version 1.1 of triplist is now under development!
 ## v1.0 (April 17, 2025)
 see v1.0 here: https://github.com/flameofanor/Trip_List_v1.0
 (not functional in current state)
+
+basic structure of master gear table!
 ![database structure](docs/development/images/v1_0/master_gear_database_screenshot.png)
 
 
