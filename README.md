@@ -1,5 +1,7 @@
 # TripList
 
-# TripList v1.1
-version 1.1 of triplist is now under development!
-see v1.0 here: https://github.com/flameofanor/Trip_List_v1.0
+
+## Recent Changes
+[View full changelog](./CHANGELOG.md)
+- v1.1: Added Drift for database management, improved code structure (April 17, 2025)
+- v1.0: Initial release (April 7, 2025)
