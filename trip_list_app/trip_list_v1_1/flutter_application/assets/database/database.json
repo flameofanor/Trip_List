@@ -1,0 +1,720 @@
+{
+    "type": "database",
+    "name": "app",
+    "objects": [
+        {
+            "type": "table",
+            "database": null,
+            "name": "climbing_gear",
+            "withoutRowId": false,
+            "strict": true,
+            "ddl": "CREATE TABLE climbing_gear (item_id INTEGER PRIMARY KEY REFERENCES master_gear (item_id), type TEXT CHECK (type IN ('runner', 'protection', 'rope', 'ropework'))) STRICT",
+            "columns": [
+                {
+                    "name": "item_id",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "PRIMARY KEY",
+                            "definition": "PRIMARY KEY "
+                        },
+                        {
+                            "type": "FOREIGN KEY",
+                            "definition": "REFERENCES master_gear (item_id)"
+                        }
+                    ]
+                },
+                {
+                    "name": "type",
+                    "type": "TEXT",
+                    "constraints": [
+                        {
+                            "type": "CHECK",
+                            "definition": "CHECK (type IN ('runner', 'protection', 'rope', 'ropework'))"
+                        }
+                    ]
+                }
+            ],
+            "rows": [
+            ]
+        },
+        {
+            "type": "table",
+            "database": null,
+            "name": "climbing_gear_hardware",
+            "withoutRowId": false,
+            "strict": true,
+            "ddl": "CREATE TABLE climbing_gear_hardware (item_id INTEGER REFERENCES climbing_gear (item_id), type TEXT CHECK (type IN ('beaner', 'rap_ring', 'chain')), material TEXT CHECK (material IN ('steel', 'aluminum')), locking INTEGER DEFAULT (0), size INTEGER DEFAULT (0)) STRICT",
+            "columns": [
+                {
+                    "name": "item_id",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "FOREIGN KEY",
+                            "definition": "REFERENCES climbing_gear (item_id)"
+                        }
+                    ]
+                },
+                {
+                    "name": "type",
+                    "type": "TEXT",
+                    "constraints": [
+                        {
+                            "type": "CHECK",
+                            "definition": "CHECK (type IN ('beaner', 'rap_ring', 'chain'))"
+                        }
+                    ]
+                },
+                {
+                    "name": "material",
+                    "type": "TEXT",
+                    "constraints": [
+                        {
+                            "type": "CHECK",
+                            "definition": "CHECK (material IN ('steel', 'aluminum'))"
+                        }
+                    ]
+                },
+                {
+                    "name": "locking",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "DEFAULT",
+                            "definition": "DEFAULT (0)"
+                        }
+                    ]
+                },
+                {
+                    "name": "size",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "DEFAULT",
+                            "definition": "DEFAULT (0)"
+                        }
+                    ]
+                }
+            ],
+            "rows": [
+            ]
+        },
+        {
+            "type": "table",
+            "database": null,
+            "name": "climbing_gear_iceaxe",
+            "withoutRowId": false,
+            "strict": true,
+            "ddl": "CREATE TABLE climbing_gear_iceaxe (item_id INTEGER REFERENCES climbing_gear (item_id), type TEXT CHECK (type IN ('glacier', 'snow', 'ice')), length_cm INTEGER DEFAULT (0), slope INTEGER DEFAULT (0), mixed INTEGER DEFAULT (0)) STRICT",
+            "columns": [
+                {
+                    "name": "item_id",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "FOREIGN KEY",
+                            "definition": "REFERENCES climbing_gear (item_id)"
+                        }
+                    ]
+                },
+                {
+                    "name": "type",
+                    "type": "TEXT",
+                    "constraints": [
+                        {
+                            "type": "CHECK",
+                            "definition": "CHECK (type IN ('glacier', 'snow', 'ice'))"
+                        }
+                    ]
+                },
+                {
+                    "name": "length_cm",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "DEFAULT",
+                            "definition": "DEFAULT (0)"
+                        }
+                    ]
+                },
+                {
+                    "name": "slope",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "DEFAULT",
+                            "definition": "DEFAULT (0)"
+                        }
+                    ]
+                },
+                {
+                    "name": "mixed",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "DEFAULT",
+                            "definition": "DEFAULT (0)"
+                        }
+                    ]
+                }
+            ],
+            "rows": [
+            ]
+        },
+        {
+            "type": "table",
+            "database": null,
+            "name": "climbing_gear_personal",
+            "withoutRowId": false,
+            "strict": true,
+            "ddl": "CREATE TABLE climbing_gear_personal (item_id INTEGER REFERENCES climbing_gear (item_id), type TEXT CHECK (type IN ('helmet', 'chalkbag', 'harness', 'shoes'))) STRICT",
+            "columns": [
+                {
+                    "name": "item_id",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "FOREIGN KEY",
+                            "definition": "REFERENCES climbing_gear (item_id)"
+                        }
+                    ]
+                },
+                {
+                    "name": "type",
+                    "type": "TEXT",
+                    "constraints": [
+                        {
+                            "type": "CHECK",
+                            "definition": "CHECK (type IN ('helmet', 'chalkbag', 'harness', 'shoes'))"
+                        }
+                    ]
+                }
+            ],
+            "rows": [
+            ]
+        },
+        {
+            "type": "table",
+            "database": null,
+            "name": "climbing_gear_personal_shoes",
+            "withoutRowId": false,
+            "strict": true,
+            "ddl": "CREATE TABLE climbing_gear_personal_shoes (shoe_id INTEGER PRIMARY KEY AUTOINCREMENT, item_id INTEGER REFERENCES climbing_gear (item_id), type TEXT CHECK (type IN ('rock', 'approach', 'ice')), condition INTEGER DEFAULT (0), resoles INTEGER DEFAULT (0), rubber_type TEXT, trad_score INTEGER DEFAULT (0), sport_score INTEGER DEFAULT (0), crack_score INTEGER DEFAULT (0), hiking_score INTEGER DEFAULT (0), agressive_score INTEGER DEFAULT (0)) STRICT",
+            "columns": [
+                {
+                    "name": "shoe_id",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "PRIMARY KEY",
+                            "definition": "PRIMARY KEY AUTOINCREMENT"
+                        }
+                    ]
+                },
+                {
+                    "name": "item_id",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "FOREIGN KEY",
+                            "definition": "REFERENCES climbing_gear (item_id)"
+                        }
+                    ]
+                },
+                {
+                    "name": "type",
+                    "type": "TEXT",
+                    "constraints": [
+                        {
+                            "type": "CHECK",
+                            "definition": "CHECK (type IN ('rock', 'approach', 'ice'))"
+                        }
+                    ]
+                },
+                {
+                    "name": "condition",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "DEFAULT",
+                            "definition": "DEFAULT (0)"
+                        }
+                    ]
+                },
+                {
+                    "name": "resoles",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "DEFAULT",
+                            "definition": "DEFAULT (0)"
+                        }
+                    ]
+                },
+                {
+                    "name": "rubber_type",
+                    "type": "TEXT"
+                },
+                {
+                    "name": "trad_score",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "DEFAULT",
+                            "definition": "DEFAULT (0)"
+                        }
+                    ]
+                },
+                {
+                    "name": "sport_score",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "DEFAULT",
+                            "definition": "DEFAULT (0)"
+                        }
+                    ]
+                },
+                {
+                    "name": "crack_score",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "DEFAULT",
+                            "definition": "DEFAULT (0)"
+                        }
+                    ]
+                },
+                {
+                    "name": "hiking_score",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "DEFAULT",
+                            "definition": "DEFAULT (0)"
+                        }
+                    ]
+                },
+                {
+                    "name": "agressive_score",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "DEFAULT",
+                            "definition": "DEFAULT (0)"
+                        }
+                    ]
+                }
+            ],
+            "rows": [
+            ]
+        },
+        {
+            "type": "table",
+            "database": null,
+            "name": "climbing_gear_protection",
+            "withoutRowId": false,
+            "strict": true,
+            "ddl": "CREATE TABLE climbing_gear_protection (item_id INTEGER REFERENCES climbing_gear (item_id), type TEXT CHECK (type IN ('cam', 'nut', 'tube', 'hex', 'icescrew', 'snowpicket')), size INTEGER DEFAULT (0)) STRICT",
+            "columns": [
+                {
+                    "name": "item_id",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "FOREIGN KEY",
+                            "definition": "REFERENCES climbing_gear (item_id)"
+                        }
+                    ]
+                },
+                {
+                    "name": "type",
+                    "type": "TEXT",
+                    "constraints": [
+                        {
+                            "type": "CHECK",
+                            "definition": "CHECK (type IN ('cam', 'nut', 'tube', 'hex', 'icescrew', 'snowpicket'))"
+                        }
+                    ]
+                },
+                {
+                    "name": "size",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "DEFAULT",
+                            "definition": "DEFAULT (0)"
+                        }
+                    ]
+                }
+            ],
+            "rows": [
+            ]
+        },
+        {
+            "type": "table",
+            "database": null,
+            "name": "climbing_gear_rope",
+            "withoutRowId": false,
+            "strict": true,
+            "ddl": "CREATE TABLE climbing_gear_rope (item_id INTEGER REFERENCES climbing_gear (item_id), type TEXT CHECK (type IN ('rope', 'webbing', 'tagline')), length_m INTEGER DEFAULT (0), width_tmm INTEGER DEFAULT (0), dry_treated INTEGER DEFAULT (0), dynamic INTEGER DEFAULT (0), dom TEXT DEFAULT ('2000-01-01'), condition INTEGER DEFAULT (0)) STRICT",
+            "columns": [
+                {
+                    "name": "item_id",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "FOREIGN KEY",
+                            "definition": "REFERENCES climbing_gear (item_id)"
+                        }
+                    ]
+                },
+                {
+                    "name": "type",
+                    "type": "TEXT",
+                    "constraints": [
+                        {
+                            "type": "CHECK",
+                            "definition": "CHECK (type IN ('rope', 'webbing', 'tagline'))"
+                        }
+                    ]
+                },
+                {
+                    "name": "length_m",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "DEFAULT",
+                            "definition": "DEFAULT (0)"
+                        }
+                    ]
+                },
+                {
+                    "name": "width_tmm",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "DEFAULT",
+                            "definition": "DEFAULT (0)"
+                        }
+                    ]
+                },
+                {
+                    "name": "dry_treated",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "DEFAULT",
+                            "definition": "DEFAULT (0)"
+                        }
+                    ]
+                },
+                {
+                    "name": "dynamic",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "DEFAULT",
+                            "definition": "DEFAULT (0)"
+                        }
+                    ]
+                },
+                {
+                    "name": "dom",
+                    "type": "TEXT",
+                    "constraints": [
+                        {
+                            "type": "DEFAULT",
+                            "definition": "DEFAULT ('2000-01-01')"
+                        }
+                    ]
+                },
+                {
+                    "name": "condition",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "DEFAULT",
+                            "definition": "DEFAULT (0)"
+                        }
+                    ]
+                }
+            ],
+            "rows": [
+            ]
+        },
+        {
+            "type": "table",
+            "database": null,
+            "name": "climbing_gear_ropework",
+            "withoutRowId": false,
+            "strict": true,
+            "ddl": "CREATE TABLE climbing_gear_ropework (item_id INTEGER REFERENCES climbing_gear (item_id), type TEXT CHECK (type IN ('atc', 'grigri', 'jumar', 'rappel', 'microtraction', 'other')), width_min_tmm REAL DEFAULT (0), width_max_tmm REAL DEFAULT (0), auto_locking INTEGER DEFAULT (0), mechanical_device INTEGER DEFAULT (0), double_rope INTEGER DEFAULT (0)) STRICT",
+            "columns": [
+                {
+                    "name": "item_id",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "FOREIGN KEY",
+                            "definition": "REFERENCES climbing_gear (item_id)"
+                        }
+                    ]
+                },
+                {
+                    "name": "type",
+                    "type": "TEXT",
+                    "constraints": [
+                        {
+                            "type": "CHECK",
+                            "definition": "CHECK (type IN ('atc', 'grigri', 'jumar', 'rappel', 'microtraction', 'other'))"
+                        }
+                    ]
+                },
+                {
+                    "name": "width_min_tmm",
+                    "type": "REAL",
+                    "constraints": [
+                        {
+                            "type": "DEFAULT",
+                            "definition": "DEFAULT (0)"
+                        }
+                    ]
+                },
+                {
+                    "name": "width_max_tmm",
+                    "type": "REAL",
+                    "constraints": [
+                        {
+                            "type": "DEFAULT",
+                            "definition": "DEFAULT (0)"
+                        }
+                    ]
+                },
+                {
+                    "name": "auto_locking",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "DEFAULT",
+                            "definition": "DEFAULT (0)"
+                        }
+                    ]
+                },
+                {
+                    "name": "mechanical_device",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "DEFAULT",
+                            "definition": "DEFAULT (0)"
+                        }
+                    ]
+                },
+                {
+                    "name": "double_rope",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "DEFAULT",
+                            "definition": "DEFAULT (0)"
+                        }
+                    ]
+                }
+            ],
+            "rows": [
+            ]
+        },
+        {
+            "type": "table",
+            "database": null,
+            "name": "climbing_gear_runner",
+            "withoutRowId": false,
+            "strict": true,
+            "ddl": "CREATE TABLE climbing_gear_runner (item_id INTEGER REFERENCES climbing_gear (item_id), type TEXT CHECK (type IN ('quickdraw', 'longdraw', 'alpine_draw', 'single', 'double', 'loadlimited')), length_cm INTEGER DEFAULT (0)) STRICT",
+            "columns": [
+                {
+                    "name": "item_id",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "FOREIGN KEY",
+                            "definition": "REFERENCES climbing_gear (item_id)"
+                        }
+                    ]
+                },
+                {
+                    "name": "type",
+                    "type": "TEXT",
+                    "constraints": [
+                        {
+                            "type": "CHECK",
+                            "definition": "CHECK (type IN ('quickdraw', 'longdraw', 'alpine_draw', 'single', 'double', 'loadlimited'))"
+                        }
+                    ]
+                },
+                {
+                    "name": "length_cm",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "DEFAULT",
+                            "definition": "DEFAULT (0)"
+                        }
+                    ]
+                }
+            ],
+            "rows": [
+            ]
+        },
+        {
+            "type": "table",
+            "database": null,
+            "name": "gear_needs_repair",
+            "withoutRowId": false,
+            "strict": true,
+            "ddl": "CREATE TABLE gear_needs_repair (repair_id INTEGER PRIMARY KEY AUTOINCREMENT, item_id INTEGER REFERENCES master_gear (item_id), type TEXT CHECK (type IN ('patch', 'part_replacement', 'sharpening', 'sewing', 'water_proofing', 'wash')), usable INTEGER DEFAULT (0), note TEXT) STRICT",
+            "columns": [
+                {
+                    "name": "repair_id",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "PRIMARY KEY",
+                            "definition": "PRIMARY KEY AUTOINCREMENT"
+                        }
+                    ]
+                },
+                {
+                    "name": "item_id",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "FOREIGN KEY",
+                            "definition": "REFERENCES master_gear (item_id)"
+                        }
+                    ]
+                },
+                {
+                    "name": "type",
+                    "type": "TEXT",
+                    "constraints": [
+                        {
+                            "type": "CHECK",
+                            "definition": "CHECK (type IN ('patch', 'part_replacement', 'sharpening', 'sewing', 'water_proofing', 'wash'))"
+                        }
+                    ]
+                },
+                {
+                    "name": "usable",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "DEFAULT",
+                            "definition": "DEFAULT (0)"
+                        }
+                    ]
+                },
+                {
+                    "name": "note",
+                    "type": "TEXT"
+                }
+            ],
+            "rows": [
+            ]
+        },
+        {
+            "type": "table",
+            "database": null,
+            "name": "gear_notes",
+            "withoutRowId": false,
+            "strict": true,
+            "ddl": "CREATE TABLE gear_notes (item_id INTEGER REFERENCES master_gear (item_id), note TEXT) STRICT",
+            "columns": [
+                {
+                    "name": "item_id",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "FOREIGN KEY",
+                            "definition": "REFERENCES master_gear (item_id)"
+                        }
+                    ]
+                },
+                {
+                    "name": "note",
+                    "type": "TEXT"
+                }
+            ],
+            "rows": [
+            ]
+        },
+        {
+            "type": "table",
+            "database": null,
+            "name": "master_gear",
+            "withoutRowId": false,
+            "strict": true,
+            "ddl": "CREATE TABLE master_gear (item_id INTEGER PRIMARY KEY ASC AUTOINCREMENT, name TEXT, type TEXT CHECK (type IN ('climbing')), quantity INTEGER DEFAULT (0), weight INTEGER DEFAULT (0), price INTEGER DEFAULT (0)) STRICT",
+            "columns": [
+                {
+                    "name": "item_id",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "PRIMARY KEY",
+                            "definition": "PRIMARY KEY ASC AUTOINCREMENT"
+                        }
+                    ]
+                },
+                {
+                    "name": "name",
+                    "type": "TEXT"
+                },
+                {
+                    "name": "type",
+                    "type": "TEXT",
+                    "constraints": [
+                        {
+                            "type": "CHECK",
+                            "definition": "CHECK (type IN ('climbing'))"
+                        }
+                    ]
+                },
+                {
+                    "name": "quantity",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "DEFAULT",
+                            "definition": "DEFAULT (0)"
+                        }
+                    ]
+                },
+                {
+                    "name": "weight",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "DEFAULT",
+                            "definition": "DEFAULT (0)"
+                        }
+                    ]
+                },
+                {
+                    "name": "price",
+                    "type": "INTEGER",
+                    "constraints": [
+                        {
+                            "type": "DEFAULT",
+                            "definition": "DEFAULT (0)"
+                        }
+                    ]
+                }
+            ],
+            "rows": [
+            ]
+        }
+    ]
+}

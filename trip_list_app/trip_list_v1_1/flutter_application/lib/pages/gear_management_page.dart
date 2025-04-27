@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_application/services/database.dart'; // Updated import
+import 'package:flutter_application/services/database/database.dart'; // Updated import
 import 'package:provider/provider.dart';
 
 class GearManagementPage extends StatefulWidget {
@@ -44,8 +44,8 @@ class _GearManagementPageState extends State<GearManagementPage> {
               final item = gearItems[index];
               return ListTile(
                 title: Text(item.name),
-                subtitle: Text('${item.type} • Qty: ${item.qty}'),
-                trailing: Text('\$${(item.priceCents / 100).toStringAsFixed(2)}'),
+                subtitle: Text('${item.type} • Qty: ${item.quantity}'),
+                trailing: Text('\$${(item.price / 100).toStringAsFixed(2)}'),
               );
             },
           );
@@ -161,7 +161,7 @@ class _GearManagementPageState extends State<GearManagementPage> {
                 ElevatedButton(
                   onPressed: () async {
                     if (gearName != null && gearType != null && gearQuantity != null && weight != null && price != null) {
-                      database.addMasterGear(
+                      database.addGear(
                         gearName!, 
                         gearType!, 
                         gearQuantity!, 
