@@ -17,6 +17,7 @@ class UserPreferences {
  UserPreferences._internal();
  
  Future<void> initialize() async {
+  
    final directory = await getApplicationDocumentsDirectory();
    _preferencesFile = File('${directory.path}/$_fileName');
    

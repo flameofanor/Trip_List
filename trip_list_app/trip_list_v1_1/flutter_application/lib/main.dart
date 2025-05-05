@@ -8,16 +8,20 @@ late final List<String> modules;
 
 void main() {
   // Create database instance
+  WidgetsFlutterBinding.ensureInitialized();
   loadModules();
   final database = AppDatabase();
   
   runApp(
     // Provide database to entire app
+
     Provider.value(
       value: database,
       child: const MyApp(),
     ),
   );
+  
+
 }
 
 class MyApp extends StatelessWidget {
