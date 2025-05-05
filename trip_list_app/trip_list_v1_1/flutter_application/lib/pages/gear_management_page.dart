@@ -46,14 +46,26 @@ class _GearManagementPageState extends State<GearManagementPage> {
                 title: Text(item.name),
                 subtitle: Text('${item.type} • Qty: ${item.quantity}'),
                 trailing: Text('\$${(item.price / 100).toStringAsFixed(2)}'),
+                onTap: editGear,
               );
             },
           );
+          /*
+          Is somewhere here where I can make my gear clickable / editable? Also check out the groovy way that I designed the 
+          GUI in my notebook. its pretty swifty methinks
+          */
         },
       ),
       floatingActionButton: _addGearButton(context),
     );
   }
+
+  void editGear() {
+    Page _editGear(BuildContext context) {
+      //maybe do a new page for editing gear? or like an overlay?
+    }
+  }
+
 
   Widget _addGearButton(BuildContext context) {
     final database = Provider.of<AppDatabase>(context, listen: false);
@@ -187,6 +199,11 @@ class _GearManagementPageState extends State<GearManagementPage> {
   }
 }
 
+// Widget _editGearButton(BuildContext context) { //pop up for gear editing. make all of these for mobile app emulator though!
+// // later add options for web and desktop if still desired)
+//   final database = Provider.of<AppDatabase>(context, listen: false);
+
+// }
 
 
 // import 'package:flutter/material.dart';

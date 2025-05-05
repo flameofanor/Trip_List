@@ -964,7 +964,7 @@ class GearNotesCompanion extends UpdateCompanion<GearNote> {
   }
 }
 
-class $ClimbingGearTable extends ClimbingGear
+class $ClimbingGearTable extends db_climbing.ClimbingGear
     with TableInfo<$ClimbingGearTable, ClimbingGearData> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -1161,7 +1161,7 @@ class ClimbingGearCompanion extends UpdateCompanion<ClimbingGearData> {
   }
 }
 
-class $ClimbingGearHardwareTable extends ClimbingGearHardware
+class $ClimbingGearHardwareTable extends db_climbing.ClimbingGearHardware
     with TableInfo<$ClimbingGearHardwareTable, ClimbingGearHardwareData> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -1527,7 +1527,7 @@ class ClimbingGearHardwareCompanion
   }
 }
 
-class $ClimbingGearIceaxeTable extends ClimbingGearIceaxe
+class $ClimbingGearIceaxeTable extends db_climbing.ClimbingGearIceaxe
     with TableInfo<$ClimbingGearIceaxeTable, ClimbingGearIceaxeData> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -1884,7 +1884,7 @@ class ClimbingGearIceaxeCompanion
   }
 }
 
-class $ClimbingGearPersonalTable extends ClimbingGearPersonal
+class $ClimbingGearPersonalTable extends db_climbing.ClimbingGearPersonal
     with TableInfo<$ClimbingGearPersonalTable, ClimbingGearPersonalData> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -2110,7 +2110,8 @@ class ClimbingGearPersonalCompanion
   }
 }
 
-class $ClimbingGearPersonalShoesTable extends ClimbingGearPersonalShoes
+class $ClimbingGearPersonalShoesTable
+    extends db_climbing.ClimbingGearPersonalShoes
     with TableInfo<$ClimbingGearPersonalShoesTable, ClimbingGearPersonalShoe> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -2776,7 +2777,7 @@ class ClimbingGearPersonalShoesCompanion
   }
 }
 
-class $ClimbingGearProtectionTable extends ClimbingGearProtection
+class $ClimbingGearProtectionTable extends db_climbing.ClimbingGearProtection
     with TableInfo<$ClimbingGearProtectionTable, ClimbingGearProtectionData> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -3047,7 +3048,7 @@ class ClimbingGearProtectionCompanion
   }
 }
 
-class $ClimbingGearRopeTable extends ClimbingGearRope
+class $ClimbingGearRopeTable extends db_climbing.ClimbingGearRope
     with TableInfo<$ClimbingGearRopeTable, ClimbingGearRopeData> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -3559,7 +3560,7 @@ class ClimbingGearRopeCompanion extends UpdateCompanion<ClimbingGearRopeData> {
   }
 }
 
-class $ClimbingGearRopeworkTable extends ClimbingGearRopework
+class $ClimbingGearRopeworkTable extends db_climbing.ClimbingGearRopework
     with TableInfo<$ClimbingGearRopeworkTable, ClimbingGearRopeworkData> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -4050,7 +4051,7 @@ class ClimbingGearRopeworkCompanion
   }
 }
 
-class $ClimbingGearRunnerTable extends ClimbingGearRunner
+class $ClimbingGearRunnerTable extends db_climbing.ClimbingGearRunner
     with TableInfo<$ClimbingGearRunnerTable, ClimbingGearRunnerData> {
   @override
   final GeneratedDatabase attachedDatabase;

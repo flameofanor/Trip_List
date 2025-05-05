@@ -9,18 +9,56 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'package:flutter/services.dart' show rootBundle;
 
-import 'package:sqlite3/sqlite3.dart';
+import 'package:sqlite3/sqlite3.dart'; 
 import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 //import 'package:flutter_application/services/database.g.dart';
 
 // import other tables
-import 'type_climbing.dart';
+import 'type_climbing.dart' as db_climbing;
 
 part 'database.g.dart';
+
 
 // Define tables that match the database schema
 // Define collapsable section for tables
 // This section can be expanded or collapsed for better readability
+
+// #region gear types 
+enum GearType {
+  climbing;
+  //camping,
+  //clothing;
+
+  static GearType fromString(String value) {
+    return GearType.values.firstWhere(
+      (type) => type.name == value,
+    );
+  }
+}
+
+
+
+
+enum GearTypeClimbing {
+    rope,
+    protection,
+    runner,
+    ropework,
+    hardware,
+    iceaxe,
+    personal;
+
+    static GearTypeClimbing fromString(String value) {
+    return GearTypeClimbing.values.firstWhere(
+      (type) => type.name == value,
+    );
+  }
+
+
+
+  }
+
+// #endregion
 
 
 
@@ -58,28 +96,30 @@ class GearNotes extends Table {
     MasterGear,
     GearNeedsRepair,
     GearNotes,
-    ...climbingTables
+    ...db_climbing.climbingTables
     ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
-
+  
+  
   
 
-  final typeClimbing = TypeClimbing();
+  final typeClimbing = db_climbing.TypeClimbing();
 
 
   @override
   int get schemaVersion => 1;
 
+// #region Adding Gear
   // Add gear to master gear table
-  Future<int> addGear(
+  Future<int> addGear (
     String name,
     String type,
     int quantity,
     int weightTg,
     int priceCents,
   ) {
-    return into(masterGear).insert(
+    return into(masterGear).insert( //does this return the item_id? could i make it do so? I kinda need the item id for other things
       MasterGearCompanion.insert(
         name: name,
         type: type,
@@ -88,7 +128,69 @@ class AppDatabase extends _$AppDatabase {
         price: Value(priceCents),
       ),
     );
+    // final gearType = GearType.fromString(type);
+    // switch (gearType) {
+    //   case GearType.climbing:
+
+    //     break;
+    //   // case GearType.camping:
+    //   //   break;
+    //   // case GearType.clothing:
+    //   //   break;
+    
   }
+
+ // Add gear to sub tables
+  Future<int> addClimbingGear(int itemId, String type)  {
+    return into(climbingGear).insert(
+      ClimbingGearCompanion(
+        itemId: Value(itemId),
+        type: Value(type)
+
+      )
+    );
+  }
+  
+  // IDEA!
+  /*
+what about making it so a gear adder will request the items that the database needs in gui? wait nvmd a lot of that
+will move to backend. im just trying to thing of ways to avoid writing a million functions for every table. maybe thats
+just how sql tables get handled? I guess if i did it the way e was saying where each table has a single value (2 column)
+I could standardize better. Hmm. Like a rope could have multiple entries with different values leading back to the same
+master gear item? not sure if that really makes sense
+also instead of climbing gear table, it might be better to make a sqlite... i forget the name of it, but the thing that saves
+processing time by building like a relational index to keep track of what master gear items are type = climbing gear
+
+hmm. these are ideas that could make defining new tables easier in the end. It might be worth making another database and structuring 
+it this way and writing an app that works with it to see what i like better.
+This might be the play, i think a lot of handler functions could be general and the app would request more input / show more input When
+it is available.
+even better sqlite allows me to make non-strict tables with different value types in the same column i believe?
+
+
+
+is there a way to say companion of table x?
+well if i did the stuff detailed above, i dont think id need to
+br might be onto something with the way they do things methinks
+
+  */
+
+
+
+
+// #endregion
+
+  Future<List> getGear(int itemId) async {
+    List list = [];
+    String type = await getType(itemId);
+    if (type == "climbing") {
+      
+    }
+    return list;
+  }
+
+    
+    
 
 // #region Master Gear Getters:
   Future<String> getName(int itemId) =>
@@ -114,8 +216,6 @@ class AppDatabase extends _$AppDatabase {
 
   // Get all master gear items
   Future<List<MasterGearData>> getAllMasterGear() => select(masterGear).get();
-
-
 // #endregion
 
 // #region Master Gear Setters:
@@ -155,7 +255,7 @@ class AppDatabase extends _$AppDatabase {
 // #region type table handlers:
 
   /// Adds an item that exists in MasterGear to ClimbingGear table
-  /// Once completed, calls [TypeClimbing.addGear]
+  /// Once completed, calls [db_climbing.TypeClimbing.addGear]
   /// type here is of ('runner', 'protection', 'rope', 'ropework', 'hardware', 'iceaxe', 'personal')
   Future<void> addClimbing(int itemId, String type) async
   {

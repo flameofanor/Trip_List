@@ -13,7 +13,9 @@ import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 //import 'package:flutter_application/services/database.g.dart';
 
 //import other tables
-import 'database.dart';
+import 'database.dart' as db;
+
+
 
 
 
@@ -55,7 +57,7 @@ enum GearType {
 // #region tables
 
 class ClimbingGear extends Table {
-  IntColumn get itemId => integer().references(MasterGear, #itemId)();
+  IntColumn get itemId => integer().references(db.MasterGear, #itemId)();
   @override
   Set<Column<Object>> get primaryKey => {itemId}; //item id is primary and foreign key
   TextColumn get type =>
@@ -141,6 +143,7 @@ class TypeClimbing {
   
 
 
+  
 
 
 
