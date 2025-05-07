@@ -46,7 +46,7 @@ class _GearManagementPageState extends State<GearManagementPage> {
                 title: Text(item.name),
                 subtitle: Text('${item.type} • Qty: ${item.quantity}'),
                 trailing: Text('\$${(item.price / 100).toStringAsFixed(2)}'),
-                onTap: editGear,
+                // onTap: editGear,
               );
             },
           );
@@ -60,11 +60,11 @@ class _GearManagementPageState extends State<GearManagementPage> {
     );
   }
 
-  void editGear() {
-    Page _editGear(BuildContext context) {
-      //maybe do a new page for editing gear? or like an overlay?
-    }
-  }
+//   void editGear() {
+//     Page _editGear(BuildContext context) {
+//       //maybe do a new page for editing gear? or like an overlay?
+//     }
+//   }
 
 
   Widget _addGearButton(BuildContext context) {
