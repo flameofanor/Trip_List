@@ -18,19 +18,6 @@ import 'database.dart' as db;
 
 
 
-
-const climbingTables = [
-  ClimbingGear,
-  ClimbingGearHardware,
-  ClimbingGearIceaxe,
-  ClimbingGearPersonal,
-  ClimbingGearPersonalShoes,
-  ClimbingGearProtection,
-  ClimbingGearRope,
-  ClimbingGearRopework,
-  ClimbingGearRunner,
-];
-
 enum GearType {
     rope,
     protection,
@@ -52,88 +39,6 @@ enum GearType {
 
 
 
-
-
-// #region tables
-
-class ClimbingGear extends Table {
-  IntColumn get itemId => integer().references(db.MasterGear, #itemId)();
-  @override
-  Set<Column<Object>> get primaryKey => {itemId}; //item id is primary and foreign key
-  TextColumn get type =>
-      text()(); // type IN ('runner', 'protection', 'rope', 'ropework', 'hardware', 'iceaxe', 'personal')
-}
-
-class ClimbingGearHardware extends Table {
-  IntColumn get itemId => integer().references(ClimbingGear, #itemId)();
-  TextColumn get type => text()(); // ('beaner', 'rap_ring', 'chain')
-  TextColumn get material => text()(); // ('steel', 'aluminum')
-  IntColumn get locking => integer().withDefault(const Constant(0))();
-  IntColumn get size => integer().withDefault(const Constant(0))();
-}
-
-class ClimbingGearIceaxe extends Table {
-  IntColumn get itemId => integer().references(ClimbingGear, #itemId)();
-  TextColumn get type => text()(); // ('glacier', 'snow', 'ice')
-  IntColumn get lengthCm => integer().withDefault(const Constant(0))();
-  IntColumn get slope => integer().withDefault(const Constant(0))();
-  IntColumn get mixed => integer().withDefault(const Constant(0))();
-}
-
-class ClimbingGearPersonal extends Table {
-  IntColumn get itemId => integer().references(ClimbingGear, #itemId)();
-  TextColumn get type => text()(); // ('helmet', 'chalkbag', 'harness', 'shoes')
-}
-
-class ClimbingGearPersonalShoes extends Table {
-  IntColumn get shoeId => integer().autoIncrement()();
-  IntColumn get itemId => integer().references(ClimbingGear, #itemId)();
-  TextColumn get type => text()(); // ('rock', 'approach', 'ice')
-  IntColumn get condition => integer().withDefault(const Constant(0))();
-  IntColumn get resoles => integer().withDefault(const Constant(0))();
-  TextColumn get rubberType => text().nullable()();
-  IntColumn get tradScore => integer().withDefault(const Constant(0))();
-  IntColumn get sportScore => integer().withDefault(const Constant(0))();
-  IntColumn get crackScore => integer().withDefault(const Constant(0))();
-  IntColumn get hikingScore => integer().withDefault(const Constant(0))();
-  IntColumn get agressiveScore => integer().withDefault(const Constant(0))();
-}
-
-class ClimbingGearProtection extends Table {
-  IntColumn get itemId => integer().references(ClimbingGear, #itemId)();
-  TextColumn get type =>
-      text()(); // ('cam', 'nut', 'tube', 'hex', 'icescrew', 'snowpicket')
-  IntColumn get size => integer().withDefault(const Constant(0))();
-}
-
-class ClimbingGearRope extends Table {
-  IntColumn get itemId => integer().references(ClimbingGear, #itemId)();
-  TextColumn get type => text()(); // ('rope', 'webbing', 'tagline')
-  IntColumn get lengthM => integer().withDefault(const Constant(0))();
-  IntColumn get widthTmm => integer().withDefault(const Constant(0))();
-  IntColumn get dryTreated => integer().withDefault(const Constant(0))();
-  IntColumn get isDynamic => integer().withDefault(const Constant(0))();
-  TextColumn get dom => text().withDefault(const Constant('2000-01-01'))();
-  IntColumn get condition => integer().withDefault(const Constant(0))();
-}
-
-class ClimbingGearRopework extends Table {
-  IntColumn get itemId => integer().references(ClimbingGear, #itemId)();
-  TextColumn get type =>
-      text()(); // ('atc', 'grigri', 'jumar', 'rappel', 'microtraction', 'other')
-  RealColumn get widthMinTmm => real().withDefault(const Constant(0))();
-  RealColumn get widthMaxTmm => real().withDefault(const Constant(0))();
-  IntColumn get autoLocking => integer().withDefault(const Constant(0))();
-  IntColumn get mechanicalDevice => integer().withDefault(const Constant(0))();
-  IntColumn get doubleRope => integer().withDefault(const Constant(0))();
-}
-
-class ClimbingGearRunner extends Table {
-  IntColumn get itemId => integer().references(ClimbingGear, #itemId)();
-  TextColumn get type =>
-      text()(); // ('quickdraw', 'longdraw', 'alpine_draw', 'single', 'double', 'loadlimited')
-  IntColumn get lengthCm => integer().withDefault(const Constant(0))();
-}
 
 // #endregion
 
