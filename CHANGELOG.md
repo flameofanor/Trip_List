@@ -1,5 +1,18 @@
 # TripList version history and development
 
+
+## v1.2 (May 6, 2025)
+Version 1.2 of triplist is now under development!
+- new database structure is more flexible and scalable
+
+Old structure:
+![database_structure](docs/development/images/v1_1/
+database_structure.jpg)
+New structure:
+![database_structure](docs/development/images/v1_2/
+database_structure.jpg)
+
+
 ## v1.1 (April 17, 2025)
 Version 1.1 of triplist is now under development!
 - using Drift for better database management
