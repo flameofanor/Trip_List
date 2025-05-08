@@ -3,14 +3,13 @@
 
 ## v1.2 (May 6, 2025)
 Version 1.2 of triplist is now under development!
-- new database structure is more flexible and scalable
+- new database structure is more flexible and scalable than the old (and far less complicated!)
 
-Old structure:
-![database_structure](docs/development/images/v1_1/
-database_structure.jpg)
-New structure:
-![database_structure](docs/development/images/v1_2/
-database_structure.jpg)
+<div style="display: flex; gap: 10px;">
+  <img src="docs/development/images/v1_2/database_structure.jpg" width="23.4%" alt="New structure">
+  <img src="docs/development/images/v1_1/database_structure.jpg" width="74%" alt="Old structure">
+  
+</div>
 
 
 ## v1.1 (April 17, 2025)
