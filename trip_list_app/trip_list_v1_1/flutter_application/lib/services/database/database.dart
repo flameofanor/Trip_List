@@ -17,45 +17,75 @@ import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 
 part 'database.g.dart';
 
-// #region gear types 
+// #region gear types
 enum GearType {
   climbing;
   //camping,
   //clothing;
 
   static GearType fromString(String value) {
-    return GearType.values.firstWhere(
-      (type) => type.name == value,
-    );
+    return GearType.values.firstWhere((type) => type.name == value);
   }
 }
 
-
-
-
 enum GearTypeClimbing {
-    rope,
-    protection,
-    runner,
-    ropework,
-    hardware,
-    iceaxe,
-    personal;
+  rope,
+  protection,
+  runner,
+  ropework,
+  hardware,
+  iceaxe,
+  personal;
 
-    static GearTypeClimbing fromString(String value) {
-    return GearTypeClimbing.values.firstWhere(
-      (type) => type.name == value,
-    );
+  static GearTypeClimbing fromString(String value) {
+    return GearTypeClimbing.values.firstWhere((type) => type.name == value);
   }
-
-
-
-  }
+}
 
 // #endregion
 
-
-
+/// Stores all information attached to an itemId
+/// [Master] = [itemId], [name], [quantity], [weight]
+///
+/// For each row in [Category] and [Attribute] tables corresponding to [itemId]:
+///
+/// [categoryList] = [Category.type], [Category.name], [Category.value]
+/// [attributeList] = [Attribute.type], [Attribute.name], [Attribute.value]
+///
+/// [weight], [categoryList], and [attributeList] are nullable fields
+class GearItem {
+  late final int itemId;
+  late final String name;
+  late final int quantity;
+  late final int? weight;
+  late final List<List<dynamic>>? categoryList;
+  late final List<List<dynamic>>? attributeList;
+  // Constuctor
+  GearItem({
+    required this.itemId,
+    required this.name,
+    required this.quantity,
+    this.weight,
+    List<List<dynamic>>? categoryList,
+    List<List<dynamic>>? attributeList,
+  }) {
+    this.categoryList =
+        categoryList != null
+            ? List<List<dynamic>>.unmodifiable(categoryList)
+            : null;
+    this.attributeList =
+        attributeList != null
+            ? List<List<dynamic>>.unmodifiable(attributeList)
+            : null;
+  }
+  // Getters
+  int getItemId() => itemId;
+  String getName() => name;
+  int getQuantity() => quantity;
+  int? getWeight() => weight;
+  List<List<dynamic>>? getCategoryList() => categoryList;
+  List<List<dynamic>>? getAttributeList() => attributeList;
+}
 
 // #region tables
 class Master extends Table {
@@ -64,12 +94,12 @@ class Master extends Table {
   IntColumn get quantity => integer()();
   IntColumn get weight => integer().nullable()(); // in tenths of grams
   @override
-  bool get isStrict => true; 
+  bool get isStrict => true;
 }
 
 /// For categorizing gear into types and subtypes
 /// int[itemId], text[type], text[name]?, any[value]?
-class Type extends Table {
+class Category extends Table {
   IntColumn get itemId => integer().references(Master, #itemId)();
   TextColumn get type => text()();
   TextColumn get name => text().nullable()();
@@ -90,29 +120,19 @@ class Attribute extends Table {
 }
 // #endregion
 
-@DriftDatabase(tables: [
-    Master,
-    Type,
-    Attribute
-    ])
-
-  
+@DriftDatabase(tables: [Master, Category, Attribute])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
-  
+
   @override
   int get schemaVersion => 1;
 
-// #region Adding Gear
+  // #region Adding Gear
 
   /// Add gear to master table
   /// returns [Master.itemId] of new item
-  Future<int> addGear (
-    String name,
-    int quantity,
-    int? weight,
-  ) {
-    return into(master).insert( 
+  Future<int> addGearMaster(String name, int quantity, int? weight) {
+    return into(master).insert(
       MasterCompanion.insert(
         name: name,
         quantity: quantity,
@@ -121,73 +141,106 @@ class AppDatabase extends _$AppDatabase {
     );
   }
 
- /// Add gear to [Types]
-  Future<int> addGearTypes(
-    int itemId, 
+  /// Add gear to [Category]
+  Future<int> addGearCategory(
+    int itemId,
     String type,
     String? name,
-    Value<DriftAny> value)  {
-    return into(types).insert(
-      TypesCompanion(
+    Value<DriftAny> value,
+  ) {
+    return into(category).insert(
+      CategoryCompanion(
         itemId: Value(itemId),
         type: Value(type),
         name: name != null ? Value(name) : const Value.absent(),
         value: value,
-        )
-      );
-    }
-  
-    Future<int> addGearAttributes(
-    int itemId, 
-    String type,
-    String? name,
-    Value<DriftAny> value)  {
-    return into(attributes).insert(
-      AttributesCompanion(
-        itemId: Value(itemId),
-        type: Value(type),
-        name: name != null ? Value(name) : const Value.absent(),
-        value: value,
-        ) 
-      );
-    }
-
-// #endregion
-// #region Getters
-  Future<List<dynamic>> getMaster(int id) {
-  return (select(master)..where((tbl) => tbl.itemId.equals(id))).get();
+      ),
+    );
   }
 
-  Future<List<dynamic>> getTypes(int id) {
-  return (select(type)..where((tbl) => tbl.itemId.equals(id))).get();
+  /// Add gear to [Attribute]
+  Future<int> addGearAttributes(
+    int itemId,
+    String type,
+    String? name,
+    Value<DriftAny> value,
+  ) {
+    return into(attribute).insert(
+      AttributeCompanion(
+        itemId: Value(itemId),
+        type: Value(type),
+        name: name != null ? Value(name) : const Value.absent(),
+        value: value,
+      ),
+    );
+  }
+  // #endregion
+
+  // #region Getters
+  Future<List<dynamic>> getMaster(int id) {
+    return (select(master)..where((tbl) => tbl.itemId.equals(id))).get();
+  }
+
+  Future<List<dynamic>> getCategories(int id) {
+    return (select(category)..where((tbl) => tbl.itemId.equals(id))).get();
   }
 
   Future<List<dynamic>> getAttributes(int id) {
-  return (select(attribute)..where((tbl) => tbl.itemId.equals(id))).get();
+    return (select(attribute)..where((tbl) => tbl.itemId.equals(id))).get();
   }
 
   Future<List<List<dynamic>>> getItem(int id) async {
-	List<List<dynamic>> itemData = [[],[],[]];
-	itemData[0] = await getMaster(id);
-	itemData[1] = await getTypes(id);
-	itemData[2] = await getAttributes(id);
-	return itemData;
-  }
+    List<List<dynamic>> itemData = [[], [], []];
+    itemData[0] = await getMaster(id);
+    itemData[1] = await getCategories(id);
+    itemData[2] = await getAttributes(id);
+    return itemData;
   }
 
-
+  /// Returns a [GearItem] object
+  Future<GearItem> getGearItem(int id) async {
+    List<List<dynamic>> itemData = await getItem(id);
+    int itemId = itemData[0][0].itemId as int;
+    String name = itemData[0][0].name as String;
+    int quantity = itemData[0][0].quantity as int;
+    int? weight = itemData[0][0].weight as int?;
+    List<List<dynamic>> categoryList = [[]];
+    List<List<dynamic>> attributeList = [[]];
+    itemData[0][1].forEach((CategoryData item) {
+      List<dynamic> subList = [];
+      subList.add(item.type);
+      subList.add(item.name);
+      subList.add(item.value);
+      categoryList.add(subList);
+    });
+    itemData[0][1].forEach((AttributeData item) {
+      List<dynamic> subList = [];
+      subList.add(item.type);
+      subList.add(item.name);
+      subList.add(item.value);
+      attributeList.add(subList);
+    });
+    return GearItem(
+      itemId: itemId,
+      name: name,
+      quantity: quantity,
+      weight: weight,
+      categoryList: categoryList,
+      attributeList: attributeList,
+    );
+  }
+}
 // #endregion
-  // Future<List> getGear(int itemId) async {
-  //   List list = [];
-  //   String type = await getType(itemId);
-  //   if (type == "climbing") {
-      
-  //   }
-  //   return list;
-  // }
 
-    
-    
+
+// Future<List> getGear(int itemId) async {
+//   List list = [];
+//   String type = await getType(itemId);
+//   if (type == "climbing") {
+
+//   }
+//   return list;
+// }
 
 // #region Master Gear Getters:
 //   Future<String> getName(int itemId) =>
@@ -200,11 +253,11 @@ class AppDatabase extends _$AppDatabase {
 //     (select(masterGear)..where((g) => g.itemId.equals(itemId))).map((row) => row.quantity).getSingle();
 
 // // weight stored in tengths of a gram (int)
-//   Future<int> getWeight(int itemId) => 
+//   Future<int> getWeight(int itemId) =>
 //     (select(masterGear)..where((g) => g.itemId.equals(itemId))).map((row) => row.weight).getSingle();
 
-// // price in cents 
-//   Future<int> getPrice(int itemId) => 
+// // price in cents
+//   Future<int> getPrice(int itemId) =>
 //     (select(masterGear)..where((g) => g.itemId.equals(itemId))).map((row) => row.price).getSingle();
 
 //   // Get all gear of type
@@ -237,7 +290,7 @@ class AppDatabase extends _$AppDatabase {
 //       (delete(masterGear)..where((g) => g.itemId.equals(itemId))).go();
 
 //   /// set quantity to zero
-  //Future<void> softDelete(int itemId) => 
+//Future<void> softDelete(int itemId) =>
 
 //   /// \+ int to add, - int to subtract
 //   /// + if quantity would be zero or negative, soft deletes item instead
@@ -249,12 +302,9 @@ class AppDatabase extends _$AppDatabase {
 
 // // #endregion
 
-
 //   // Watch master gear for reactive UI updates
 //   Stream<List<MasterGearData>> watchAllMasterGear() =>
 //       select(masterGear).watch();
-
-
 
 //   // Watch gear by type for reactive UI updates
 //   Stream<List<MasterGearData>> watchMasterGearByType(String type) =>
@@ -265,11 +315,10 @@ class AppDatabase extends _$AppDatabase {
 //       update(masterGear).replace(gear);
 // }
 
-
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
     // Get database location
-    
+
     final dbFolder = await getApplicationDocumentsDirectory();
     final file = File(p.join(dbFolder.path, 'app.db'));
 
@@ -290,5 +339,4 @@ LazyDatabase _openConnection() {
 
     return NativeDatabase.createInBackground(file);
   });
-
 }

@@ -307,11 +307,12 @@ class MasterCompanion extends UpdateCompanion<MasterData> {
   }
 }
 
-class $TypeTable extends Type with TableInfo<$TypeTable, TypeData> {
+class $CategoryTable extends Category
+    with TableInfo<$CategoryTable, CategoryData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $TypeTable(this.attachedDatabase, [this._alias]);
+  $CategoryTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _itemIdMeta = const VerificationMeta('itemId');
   @override
   late final GeneratedColumn<int> itemId = GeneratedColumn<int>(
@@ -357,10 +358,10 @@ class $TypeTable extends Type with TableInfo<$TypeTable, TypeData> {
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'type';
+  static const String $name = 'category';
   @override
   VerificationContext validateIntegrity(
-    Insertable<TypeData> instance, {
+    Insertable<CategoryData> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -401,9 +402,9 @@ class $TypeTable extends Type with TableInfo<$TypeTable, TypeData> {
   @override
   Set<GeneratedColumn> get $primaryKey => const {};
   @override
-  TypeData map(Map<String, dynamic> data, {String? tablePrefix}) {
+  CategoryData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return TypeData(
+    return CategoryData(
       itemId:
           attachedDatabase.typeMapping.read(
             DriftSqlType.int,
@@ -427,20 +428,20 @@ class $TypeTable extends Type with TableInfo<$TypeTable, TypeData> {
   }
 
   @override
-  $TypeTable createAlias(String alias) {
-    return $TypeTable(attachedDatabase, alias);
+  $CategoryTable createAlias(String alias) {
+    return $CategoryTable(attachedDatabase, alias);
   }
 
   @override
   bool get isStrict => true;
 }
 
-class TypeData extends DataClass implements Insertable<TypeData> {
+class CategoryData extends DataClass implements Insertable<CategoryData> {
   final int itemId;
   final String type;
   final String? name;
   final DriftAny value;
-  const TypeData({
+  const CategoryData({
     required this.itemId,
     required this.type,
     this.name,
@@ -458,8 +459,8 @@ class TypeData extends DataClass implements Insertable<TypeData> {
     return map;
   }
 
-  TypeCompanion toCompanion(bool nullToAbsent) {
-    return TypeCompanion(
+  CategoryCompanion toCompanion(bool nullToAbsent) {
+    return CategoryCompanion(
       itemId: Value(itemId),
       type: Value(type),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
@@ -467,12 +468,12 @@ class TypeData extends DataClass implements Insertable<TypeData> {
     );
   }
 
-  factory TypeData.fromJson(
+  factory CategoryData.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return TypeData(
+    return CategoryData(
       itemId: serializer.fromJson<int>(json['itemId']),
       type: serializer.fromJson<String>(json['type']),
       name: serializer.fromJson<String?>(json['name']),
@@ -490,19 +491,19 @@ class TypeData extends DataClass implements Insertable<TypeData> {
     };
   }
 
-  TypeData copyWith({
+  CategoryData copyWith({
     int? itemId,
     String? type,
     Value<String?> name = const Value.absent(),
     DriftAny? value,
-  }) => TypeData(
+  }) => CategoryData(
     itemId: itemId ?? this.itemId,
     type: type ?? this.type,
     name: name.present ? name.value : this.name,
     value: value ?? this.value,
   );
-  TypeData copyWithCompanion(TypeCompanion data) {
-    return TypeData(
+  CategoryData copyWithCompanion(CategoryCompanion data) {
+    return CategoryData(
       itemId: data.itemId.present ? data.itemId.value : this.itemId,
       type: data.type.present ? data.type.value : this.type,
       name: data.name.present ? data.name.value : this.name,
@@ -512,7 +513,7 @@ class TypeData extends DataClass implements Insertable<TypeData> {
 
   @override
   String toString() {
-    return (StringBuffer('TypeData(')
+    return (StringBuffer('CategoryData(')
           ..write('itemId: $itemId, ')
           ..write('type: $type, ')
           ..write('name: $name, ')
@@ -526,27 +527,27 @@ class TypeData extends DataClass implements Insertable<TypeData> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is TypeData &&
+      (other is CategoryData &&
           other.itemId == this.itemId &&
           other.type == this.type &&
           other.name == this.name &&
           other.value == this.value);
 }
 
-class TypeCompanion extends UpdateCompanion<TypeData> {
+class CategoryCompanion extends UpdateCompanion<CategoryData> {
   final Value<int> itemId;
   final Value<String> type;
   final Value<String?> name;
   final Value<DriftAny> value;
   final Value<int> rowid;
-  const TypeCompanion({
+  const CategoryCompanion({
     this.itemId = const Value.absent(),
     this.type = const Value.absent(),
     this.name = const Value.absent(),
     this.value = const Value.absent(),
     this.rowid = const Value.absent(),
   });
-  TypeCompanion.insert({
+  CategoryCompanion.insert({
     required int itemId,
     required String type,
     this.name = const Value.absent(),
@@ -555,7 +556,7 @@ class TypeCompanion extends UpdateCompanion<TypeData> {
   }) : itemId = Value(itemId),
        type = Value(type),
        value = Value(value);
-  static Insertable<TypeData> custom({
+  static Insertable<CategoryData> custom({
     Expression<int>? itemId,
     Expression<String>? type,
     Expression<String>? name,
@@ -571,14 +572,14 @@ class TypeCompanion extends UpdateCompanion<TypeData> {
     });
   }
 
-  TypeCompanion copyWith({
+  CategoryCompanion copyWith({
     Value<int>? itemId,
     Value<String>? type,
     Value<String?>? name,
     Value<DriftAny>? value,
     Value<int>? rowid,
   }) {
-    return TypeCompanion(
+    return CategoryCompanion(
       itemId: itemId ?? this.itemId,
       type: type ?? this.type,
       name: name ?? this.name,
@@ -610,7 +611,7 @@ class TypeCompanion extends UpdateCompanion<TypeData> {
 
   @override
   String toString() {
-    return (StringBuffer('TypeCompanion(')
+    return (StringBuffer('CategoryCompanion(')
           ..write('itemId: $itemId, ')
           ..write('type: $type, ')
           ..write('name: $name, ')
@@ -940,13 +941,17 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $MasterTable master = $MasterTable(this);
-  late final $TypeTable type = $TypeTable(this);
+  late final $CategoryTable category = $CategoryTable(this);
   late final $AttributeTable attribute = $AttributeTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [master, type, attribute];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+    master,
+    category,
+    attribute,
+  ];
 }
 
 typedef $$MasterTableCreateCompanionBuilder =
@@ -968,20 +973,19 @@ final class $$MasterTableReferences
     extends BaseReferences<_$AppDatabase, $MasterTable, MasterData> {
   $$MasterTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static MultiTypedResultKey<$TypeTable, List<TypeData>> _typeRefsTable(
-    _$AppDatabase db,
-  ) => MultiTypedResultKey.fromTable(
-    db.type,
-    aliasName: $_aliasNameGenerator(db.master.itemId, db.type.itemId),
+  static MultiTypedResultKey<$CategoryTable, List<CategoryData>>
+  _categoryRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.category,
+    aliasName: $_aliasNameGenerator(db.master.itemId, db.category.itemId),
   );
 
-  $$TypeTableProcessedTableManager get typeRefs {
-    final manager = $$TypeTableTableManager(
+  $$CategoryTableProcessedTableManager get categoryRefs {
+    final manager = $$CategoryTableTableManager(
       $_db,
-      $_db.type,
+      $_db.category,
     ).filter((f) => f.itemId.itemId.sqlEquals($_itemColumn<int>('item_id')!));
 
-    final cache = $_typedResult.readTableOrNull(_typeRefsTable($_db));
+    final cache = $_typedResult.readTableOrNull(_categoryRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -1035,22 +1039,22 @@ class $$MasterTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  Expression<bool> typeRefs(
-    Expression<bool> Function($$TypeTableFilterComposer f) f,
+  Expression<bool> categoryRefs(
+    Expression<bool> Function($$CategoryTableFilterComposer f) f,
   ) {
-    final $$TypeTableFilterComposer composer = $composerBuilder(
+    final $$CategoryTableFilterComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.itemId,
-      referencedTable: $db.type,
+      referencedTable: $db.category,
       getReferencedColumn: (t) => t.itemId,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$TypeTableFilterComposer(
+          }) => $$CategoryTableFilterComposer(
             $db: $db,
-            $table: $db.type,
+            $table: $db.category,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -1137,22 +1141,22 @@ class $$MasterTableAnnotationComposer
   GeneratedColumn<int> get weight =>
       $composableBuilder(column: $table.weight, builder: (column) => column);
 
-  Expression<T> typeRefs<T extends Object>(
-    Expression<T> Function($$TypeTableAnnotationComposer a) f,
+  Expression<T> categoryRefs<T extends Object>(
+    Expression<T> Function($$CategoryTableAnnotationComposer a) f,
   ) {
-    final $$TypeTableAnnotationComposer composer = $composerBuilder(
+    final $$CategoryTableAnnotationComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.itemId,
-      referencedTable: $db.type,
+      referencedTable: $db.category,
       getReferencedColumn: (t) => t.itemId,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$TypeTableAnnotationComposer(
+          }) => $$CategoryTableAnnotationComposer(
             $db: $db,
-            $table: $db.type,
+            $table: $db.category,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -1201,7 +1205,7 @@ class $$MasterTableTableManager
           $$MasterTableUpdateCompanionBuilder,
           (MasterData, $$MasterTableReferences),
           MasterData,
-          PrefetchHooks Function({bool typeRefs, bool attributeRefs})
+          PrefetchHooks Function({bool categoryRefs, bool attributeRefs})
         > {
   $$MasterTableTableManager(_$AppDatabase db, $MasterTable table)
     : super(
@@ -1248,29 +1252,35 @@ class $$MasterTableTableManager
                         ),
                       )
                       .toList(),
-          prefetchHooksCallback: ({typeRefs = false, attributeRefs = false}) {
+          prefetchHooksCallback: ({
+            categoryRefs = false,
+            attributeRefs = false,
+          }) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
-                if (typeRefs) db.type,
+                if (categoryRefs) db.category,
                 if (attributeRefs) db.attribute,
               ],
               addJoins: null,
               getPrefetchedDataCallback: (items) async {
                 return [
-                  if (typeRefs)
+                  if (categoryRefs)
                     await $_getPrefetchedData<
                       MasterData,
                       $MasterTable,
-                      TypeData
+                      CategoryData
                     >(
                       currentTable: table,
-                      referencedTable: $$MasterTableReferences._typeRefsTable(
-                        db,
-                      ),
+                      referencedTable: $$MasterTableReferences
+                          ._categoryRefsTable(db),
                       managerFromTypedResult:
                           (p0) =>
-                              $$MasterTableReferences(db, table, p0).typeRefs,
+                              $$MasterTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).categoryRefs,
                       referencedItemsForCurrentItem:
                           (item, referencedItems) => referencedItems.where(
                             (e) => e.itemId == item.itemId,
@@ -1319,18 +1329,18 @@ typedef $$MasterTableProcessedTableManager =
       $$MasterTableUpdateCompanionBuilder,
       (MasterData, $$MasterTableReferences),
       MasterData,
-      PrefetchHooks Function({bool typeRefs, bool attributeRefs})
+      PrefetchHooks Function({bool categoryRefs, bool attributeRefs})
     >;
-typedef $$TypeTableCreateCompanionBuilder =
-    TypeCompanion Function({
+typedef $$CategoryTableCreateCompanionBuilder =
+    CategoryCompanion Function({
       required int itemId,
       required String type,
       Value<String?> name,
       required DriftAny value,
       Value<int> rowid,
     });
-typedef $$TypeTableUpdateCompanionBuilder =
-    TypeCompanion Function({
+typedef $$CategoryTableUpdateCompanionBuilder =
+    CategoryCompanion Function({
       Value<int> itemId,
       Value<String> type,
       Value<String?> name,
@@ -1338,12 +1348,12 @@ typedef $$TypeTableUpdateCompanionBuilder =
       Value<int> rowid,
     });
 
-final class $$TypeTableReferences
-    extends BaseReferences<_$AppDatabase, $TypeTable, TypeData> {
-  $$TypeTableReferences(super.$_db, super.$_table, super.$_typedResult);
+final class $$CategoryTableReferences
+    extends BaseReferences<_$AppDatabase, $CategoryTable, CategoryData> {
+  $$CategoryTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
   static $MasterTable _itemIdTable(_$AppDatabase db) => db.master.createAlias(
-    $_aliasNameGenerator(db.type.itemId, db.master.itemId),
+    $_aliasNameGenerator(db.category.itemId, db.master.itemId),
   );
 
   $$MasterTableProcessedTableManager get itemId {
@@ -1361,8 +1371,9 @@ final class $$TypeTableReferences
   }
 }
 
-class $$TypeTableFilterComposer extends Composer<_$AppDatabase, $TypeTable> {
-  $$TypeTableFilterComposer({
+class $$CategoryTableFilterComposer
+    extends Composer<_$AppDatabase, $CategoryTable> {
+  $$CategoryTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -1408,8 +1419,9 @@ class $$TypeTableFilterComposer extends Composer<_$AppDatabase, $TypeTable> {
   }
 }
 
-class $$TypeTableOrderingComposer extends Composer<_$AppDatabase, $TypeTable> {
-  $$TypeTableOrderingComposer({
+class $$CategoryTableOrderingComposer
+    extends Composer<_$AppDatabase, $CategoryTable> {
+  $$CategoryTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -1455,9 +1467,9 @@ class $$TypeTableOrderingComposer extends Composer<_$AppDatabase, $TypeTable> {
   }
 }
 
-class $$TypeTableAnnotationComposer
-    extends Composer<_$AppDatabase, $TypeTable> {
-  $$TypeTableAnnotationComposer({
+class $$CategoryTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CategoryTable> {
+  $$CategoryTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -1497,32 +1509,32 @@ class $$TypeTableAnnotationComposer
   }
 }
 
-class $$TypeTableTableManager
+class $$CategoryTableTableManager
     extends
         RootTableManager<
           _$AppDatabase,
-          $TypeTable,
-          TypeData,
-          $$TypeTableFilterComposer,
-          $$TypeTableOrderingComposer,
-          $$TypeTableAnnotationComposer,
-          $$TypeTableCreateCompanionBuilder,
-          $$TypeTableUpdateCompanionBuilder,
-          (TypeData, $$TypeTableReferences),
-          TypeData,
+          $CategoryTable,
+          CategoryData,
+          $$CategoryTableFilterComposer,
+          $$CategoryTableOrderingComposer,
+          $$CategoryTableAnnotationComposer,
+          $$CategoryTableCreateCompanionBuilder,
+          $$CategoryTableUpdateCompanionBuilder,
+          (CategoryData, $$CategoryTableReferences),
+          CategoryData,
           PrefetchHooks Function({bool itemId})
         > {
-  $$TypeTableTableManager(_$AppDatabase db, $TypeTable table)
+  $$CategoryTableTableManager(_$AppDatabase db, $CategoryTable table)
     : super(
         TableManagerState(
           db: db,
           table: table,
           createFilteringComposer:
-              () => $$TypeTableFilterComposer($db: db, $table: table),
+              () => $$CategoryTableFilterComposer($db: db, $table: table),
           createOrderingComposer:
-              () => $$TypeTableOrderingComposer($db: db, $table: table),
+              () => $$CategoryTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer:
-              () => $$TypeTableAnnotationComposer($db: db, $table: table),
+              () => $$CategoryTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
                 Value<int> itemId = const Value.absent(),
@@ -1530,7 +1542,7 @@ class $$TypeTableTableManager
                 Value<String?> name = const Value.absent(),
                 Value<DriftAny> value = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
-              }) => TypeCompanion(
+              }) => CategoryCompanion(
                 itemId: itemId,
                 type: type,
                 name: name,
@@ -1544,7 +1556,7 @@ class $$TypeTableTableManager
                 Value<String?> name = const Value.absent(),
                 required DriftAny value,
                 Value<int> rowid = const Value.absent(),
-              }) => TypeCompanion.insert(
+              }) => CategoryCompanion.insert(
                 itemId: itemId,
                 type: type,
                 name: name,
@@ -1557,7 +1569,7 @@ class $$TypeTableTableManager
                       .map(
                         (e) => (
                           e.readTable(table),
-                          $$TypeTableReferences(db, table, e),
+                          $$CategoryTableReferences(db, table, e),
                         ),
                       )
                       .toList(),
@@ -1585,11 +1597,12 @@ class $$TypeTableTableManager
                       state.withJoin(
                             currentTable: table,
                             currentColumn: table.itemId,
-                            referencedTable: $$TypeTableReferences._itemIdTable(
-                              db,
-                            ),
+                            referencedTable: $$CategoryTableReferences
+                                ._itemIdTable(db),
                             referencedColumn:
-                                $$TypeTableReferences._itemIdTable(db).itemId,
+                                $$CategoryTableReferences
+                                    ._itemIdTable(db)
+                                    .itemId,
                           )
                           as T;
                 }
@@ -1605,18 +1618,18 @@ class $$TypeTableTableManager
       );
 }
 
-typedef $$TypeTableProcessedTableManager =
+typedef $$CategoryTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
-      $TypeTable,
-      TypeData,
-      $$TypeTableFilterComposer,
-      $$TypeTableOrderingComposer,
-      $$TypeTableAnnotationComposer,
-      $$TypeTableCreateCompanionBuilder,
-      $$TypeTableUpdateCompanionBuilder,
-      (TypeData, $$TypeTableReferences),
-      TypeData,
+      $CategoryTable,
+      CategoryData,
+      $$CategoryTableFilterComposer,
+      $$CategoryTableOrderingComposer,
+      $$CategoryTableAnnotationComposer,
+      $$CategoryTableCreateCompanionBuilder,
+      $$CategoryTableUpdateCompanionBuilder,
+      (CategoryData, $$CategoryTableReferences),
+      CategoryData,
       PrefetchHooks Function({bool itemId})
     >;
 typedef $$AttributeTableCreateCompanionBuilder =
@@ -1926,7 +1939,8 @@ class $AppDatabaseManager {
   $AppDatabaseManager(this._db);
   $$MasterTableTableManager get master =>
       $$MasterTableTableManager(_db, _db.master);
-  $$TypeTableTableManager get type => $$TypeTableTableManager(_db, _db.type);
+  $$CategoryTableTableManager get category =>
+      $$CategoryTableTableManager(_db, _db.category);
   $$AttributeTableTableManager get attribute =>
       $$AttributeTableTableManager(_db, _db.attribute);
 }
