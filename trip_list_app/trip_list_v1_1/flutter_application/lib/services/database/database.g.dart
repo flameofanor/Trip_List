@@ -345,11 +345,11 @@ class $CategoryTable extends Category
   );
   static const VerificationMeta _valueMeta = const VerificationMeta('value');
   @override
-  late final GeneratedColumn<DriftAny> value = GeneratedColumn<DriftAny>(
+  late final GeneratedColumn<String> value = GeneratedColumn<String>(
     'value',
     aliasedName,
     false,
-    type: DriftSqlType.any,
+    type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
   @override
@@ -421,7 +421,7 @@ class $CategoryTable extends Category
       ),
       value:
           attachedDatabase.typeMapping.read(
-            DriftSqlType.any,
+            DriftSqlType.string,
             data['${effectivePrefix}value'],
           )!,
     );
@@ -440,7 +440,7 @@ class CategoryData extends DataClass implements Insertable<CategoryData> {
   final int itemId;
   final String type;
   final String? name;
-  final DriftAny value;
+  final String value;
   const CategoryData({
     required this.itemId,
     required this.type,
@@ -455,7 +455,7 @@ class CategoryData extends DataClass implements Insertable<CategoryData> {
     if (!nullToAbsent || name != null) {
       map['name'] = Variable<String>(name);
     }
-    map['value'] = Variable<DriftAny>(value);
+    map['value'] = Variable<String>(value);
     return map;
   }
 
@@ -477,7 +477,7 @@ class CategoryData extends DataClass implements Insertable<CategoryData> {
       itemId: serializer.fromJson<int>(json['itemId']),
       type: serializer.fromJson<String>(json['type']),
       name: serializer.fromJson<String?>(json['name']),
-      value: serializer.fromJson<DriftAny>(json['value']),
+      value: serializer.fromJson<String>(json['value']),
     );
   }
   @override
@@ -487,7 +487,7 @@ class CategoryData extends DataClass implements Insertable<CategoryData> {
       'itemId': serializer.toJson<int>(itemId),
       'type': serializer.toJson<String>(type),
       'name': serializer.toJson<String?>(name),
-      'value': serializer.toJson<DriftAny>(value),
+      'value': serializer.toJson<String>(value),
     };
   }
 
@@ -495,7 +495,7 @@ class CategoryData extends DataClass implements Insertable<CategoryData> {
     int? itemId,
     String? type,
     Value<String?> name = const Value.absent(),
-    DriftAny? value,
+    String? value,
   }) => CategoryData(
     itemId: itemId ?? this.itemId,
     type: type ?? this.type,
@@ -538,7 +538,7 @@ class CategoryCompanion extends UpdateCompanion<CategoryData> {
   final Value<int> itemId;
   final Value<String> type;
   final Value<String?> name;
-  final Value<DriftAny> value;
+  final Value<String> value;
   final Value<int> rowid;
   const CategoryCompanion({
     this.itemId = const Value.absent(),
@@ -551,7 +551,7 @@ class CategoryCompanion extends UpdateCompanion<CategoryData> {
     required int itemId,
     required String type,
     this.name = const Value.absent(),
-    required DriftAny value,
+    required String value,
     this.rowid = const Value.absent(),
   }) : itemId = Value(itemId),
        type = Value(type),
@@ -560,7 +560,7 @@ class CategoryCompanion extends UpdateCompanion<CategoryData> {
     Expression<int>? itemId,
     Expression<String>? type,
     Expression<String>? name,
-    Expression<DriftAny>? value,
+    Expression<String>? value,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -576,7 +576,7 @@ class CategoryCompanion extends UpdateCompanion<CategoryData> {
     Value<int>? itemId,
     Value<String>? type,
     Value<String?>? name,
-    Value<DriftAny>? value,
+    Value<String>? value,
     Value<int>? rowid,
   }) {
     return CategoryCompanion(
@@ -601,7 +601,7 @@ class CategoryCompanion extends UpdateCompanion<CategoryData> {
       map['name'] = Variable<String>(name.value);
     }
     if (value.present) {
-      map['value'] = Variable<DriftAny>(value.value);
+      map['value'] = Variable<String>(value.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -1336,7 +1336,7 @@ typedef $$CategoryTableCreateCompanionBuilder =
       required int itemId,
       required String type,
       Value<String?> name,
-      required DriftAny value,
+      required String value,
       Value<int> rowid,
     });
 typedef $$CategoryTableUpdateCompanionBuilder =
@@ -1344,7 +1344,7 @@ typedef $$CategoryTableUpdateCompanionBuilder =
       Value<int> itemId,
       Value<String> type,
       Value<String?> name,
-      Value<DriftAny> value,
+      Value<String> value,
       Value<int> rowid,
     });
 
@@ -1390,7 +1390,7 @@ class $$CategoryTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<DriftAny> get value => $composableBuilder(
+  ColumnFilters<String> get value => $composableBuilder(
     column: $table.value,
     builder: (column) => ColumnFilters(column),
   );
@@ -1438,7 +1438,7 @@ class $$CategoryTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<DriftAny> get value => $composableBuilder(
+  ColumnOrderings<String> get value => $composableBuilder(
     column: $table.value,
     builder: (column) => ColumnOrderings(column),
   );
@@ -1482,7 +1482,7 @@ class $$CategoryTableAnnotationComposer
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
-  GeneratedColumn<DriftAny> get value =>
+  GeneratedColumn<String> get value =>
       $composableBuilder(column: $table.value, builder: (column) => column);
 
   $$MasterTableAnnotationComposer get itemId {
@@ -1540,7 +1540,7 @@ class $$CategoryTableTableManager
                 Value<int> itemId = const Value.absent(),
                 Value<String> type = const Value.absent(),
                 Value<String?> name = const Value.absent(),
-                Value<DriftAny> value = const Value.absent(),
+                Value<String> value = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => CategoryCompanion(
                 itemId: itemId,
@@ -1554,7 +1554,7 @@ class $$CategoryTableTableManager
                 required int itemId,
                 required String type,
                 Value<String?> name = const Value.absent(),
-                required DriftAny value,
+                required String value,
                 Value<int> rowid = const Value.absent(),
               }) => CategoryCompanion.insert(
                 itemId: itemId,
