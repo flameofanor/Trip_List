@@ -11,9 +11,6 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
-//import 'package:flutter_application/services/database.g.dart';
-
-// import other tables
 
 part 'database.g.dart';
 
@@ -58,33 +55,27 @@ class GearItem {
   late final String name;
   late final int quantity;
   late final int? weight;
-  late final List<List<dynamic>>? categoryList;
-  late final List<List<dynamic>>? attributeList;
+  late final List<List<dynamic>> categoryList;
+  late final List<List<dynamic>> attributeList;
   // Constuctor
   GearItem({
     required this.itemId,
     required this.name,
     required this.quantity,
     this.weight,
-    List<List<dynamic>>? categoryList,
-    List<List<dynamic>>? attributeList,
+    required List<List<dynamic>> categoryList,
+    required List<List<dynamic>> attributeList,
   }) {
-    this.categoryList =
-        categoryList != null
-            ? List<List<dynamic>>.unmodifiable(categoryList)
-            : null;
-    this.attributeList =
-        attributeList != null
-            ? List<List<dynamic>>.unmodifiable(attributeList)
-            : null;
+    this.categoryList = List<List<dynamic>>.unmodifiable(categoryList);
+    this.attributeList = List<List<dynamic>>.unmodifiable(attributeList);
   }
   // Getters
   int getItemId() => itemId;
   String getName() => name;
   int getQuantity() => quantity;
   int? getWeight() => weight;
-  List<List<dynamic>>? getCategoryList() => categoryList;
-  List<List<dynamic>>? getAttributeList() => attributeList;
+  List<List<dynamic>> getCategoryList() => categoryList;
+  List<List<dynamic>> getAttributeList() => attributeList;
 }
 
 // #region tables
@@ -98,12 +89,12 @@ class Master extends Table {
 }
 
 /// For categorizing gear into types and subtypes
-/// int[itemId], text[type], text[name]?, any[value]?
+/// int[itemId], text[type], text[name]?, text[value]
 class Category extends Table {
   IntColumn get itemId => integer().references(Master, #itemId)();
   TextColumn get type => text()();
   TextColumn get name => text().nullable()();
-  Column get value => sqliteAny()();
+  TextColumn get value => text()();
   @override
   bool get isStrict => true;
 }
@@ -126,9 +117,7 @@ class AppDatabase extends _$AppDatabase {
 
   @override
   int get schemaVersion => 1;
-
-  // #region Adding Gear
-
+  //#region Adders
   /// Add gear to master table
   /// returns [Master.itemId] of new item
   Future<int> addGearMaster(String name, int quantity, int? weight) {
@@ -146,14 +135,14 @@ class AppDatabase extends _$AppDatabase {
     int itemId,
     String type,
     String? name,
-    Value<DriftAny> value,
+    String value,
   ) {
     return into(category).insert(
       CategoryCompanion(
         itemId: Value(itemId),
         type: Value(type),
         name: name != null ? Value(name) : const Value.absent(),
-        value: value,
+        value: Value(value),
       ),
     );
   }
@@ -176,17 +165,140 @@ class AppDatabase extends _$AppDatabase {
   }
   // #endregion
 
-  // #region Getters
-  Future<List<dynamic>> getMaster(int id) {
+//#region Getters
+  /// If no [id] is given, returns all master gear
+  Future<List<dynamic>> getMaster(int? id) {
+    if (id == null) {
+      return select(master).get();
+    }
     return (select(master)..where((tbl) => tbl.itemId.equals(id))).get();
   }
 
-  Future<List<dynamic>> getCategories(int id) {
+  /// gets all [Master.itemId] in a list
+  Future<List<int>> getMasterId() {
+    return (select(master).map((row) => row.itemId)).get();
+  }
+
+  /// if no [id] is given, returns all categories
+  Future<List<dynamic>> getCategories(int? id) {
+    if (id == null) {
+      return select(category).get();
+    }
     return (select(category)..where((tbl) => tbl.itemId.equals(id))).get();
   }
 
-  Future<List<dynamic>> getAttributes(int id) {
+  /// - returns [List] of [String]
+  /// - contains all values for category rows in [GearItem]
+  List<String> getCategoryValues(GearItem item) {
+    if (item.categoryList.isEmpty) {
+      return [];
+    }
+    return item.categoryList
+        .where(
+          (subList) => subList.length > 2,
+        ) // Ensure the sublist has an index 2
+        .map((subList) => subList[2].toString())
+        .toList();
+  }
+
+  /// if no [id] is given, returns all attributes
+  Future<List<dynamic>> getAttributes(int? id) {
+    if (id == null) {
+      return select(attribute).get();
+    }
     return (select(attribute)..where((tbl) => tbl.itemId.equals(id))).get();
+  }
+
+  /// Get all [GearItem] of type
+  /// - [type] category, subcategory
+  /// - [value] climbing, camping, or rope, protection, etc.
+  /// - if both inputs are provided, returns a list of all [GearItem]
+  /// which has [type] with [value] in the same db row
+  /// - If just one input is provided, returns list of [GearItem] matching the input
+  /// - If no inputs are given, returns empty list
+  /// - If no gear is found, also returns empty list
+  Future<List<GearItem>> getGearByCategory([
+    String? type,
+    String? value,
+  ]) async {
+    List<GearItem> gearItems = [];
+    if (type != null && value != null) {
+      gearItems = await getGearItems(
+        await (select(category)
+          ..where((g) => g.type.equals(type))).map((row) => row.itemId).get(),
+      );
+      List<GearItem> gearItemsReturn = [];
+      for (GearItem gear in gearItems) {
+        List<List<dynamic>> categoryList = gear.getCategoryList();
+        for (List<dynamic> categories in categoryList) {
+          if (categories[0] == type && categories[2] == value) {
+            gearItemsReturn.add(gear);
+            break;
+          }
+        }
+      }
+      return gearItemsReturn;
+    }
+    if (type != null) {
+      return getGearItems(
+        await (select(category)
+          ..where((g) => g.type.equals(type))).map((row) => row.itemId).get(),
+      );
+    }
+    if (value != null) {
+      return getGearItems(
+        await (select(category)
+          ..where((g) => g.value.equals(value))).map((row) => row.itemId).get(),
+      );
+    }
+    return [];
+  }
+
+  /// Get all [GearItem] with attribute
+  /// - [type] type of attribute
+  /// - [value] dynamic value of attribute
+  /// - if both inputs are provided, returns a list of all [GearItem]
+  /// which has [type] with [value] in the same db row
+  /// - If just one input is provided, returns list of [GearItem] matching the input
+  /// - If no inputs are given, returns empty list
+  /// - If no gear is found, also returns empty list
+  Future<List<GearItem>> getGearByAttribute([
+    String? type,
+    dynamic value,
+  ]) async {
+    List<GearItem> gearItems = [];
+
+    if (type != null && value != null) {
+      gearItems = await getGearItems(
+        await (select(attribute)
+          ..where((a) => a.type.equals(type))).map((row) => row.itemId).get(),
+      );
+
+      List<GearItem> gearItemsReturn = [];
+      for (GearItem gear in gearItems) {
+        List<List<dynamic>> attributeList = gear.getAttributeList();
+        for (List<dynamic> attrs in attributeList) {
+          if (attrs[0] == type && attrs[2] == value) {
+            gearItemsReturn.add(gear);
+            break;
+          }
+        }
+      }
+      return gearItemsReturn;
+    }
+    if (type != null) {
+      return getGearItems(
+        await (select(attribute)
+          ..where((a) => a.type.equals(type))).map((row) => row.itemId).get(),
+      );
+    }
+    if (value != null) {
+      return getGearItems(
+        await (select(attribute)
+          ..where((a) => a.value.equals(value))).map((row) => row.itemId).get(),
+      );
+    }
+    return [];
   }
 
   Future<List<List<dynamic>>> getItem(int id) async {
@@ -197,6 +309,18 @@ class AppDatabase extends _$AppDatabase {
     return itemData;
   }
 
+  /// - takes a list of [ids] which can have duplicates, and produces a list of unique [GearItem]
+  /// - if no input is given, returns all [GearItem] in [Master]
+  Future<List<GearItem>> getGearItems([List<int>? ids]) async {
+    ids ??= await getMasterId();
+    List<GearItem> items = [];
+    List<int> idsUnique = ids.toSet().toList();
+    for (var id in idsUnique) {
+      items.add(await getGearItem(id));
+    }
+    return items;
+  }
+
   /// Returns a [GearItem] object
   Future<GearItem> getGearItem(int id) async {
     List<List<dynamic>> itemData = await getItem(id);
@@ -204,8 +328,8 @@ class AppDatabase extends _$AppDatabase {
     String name = itemData[0][0].name as String;
     int quantity = itemData[0][0].quantity as int;
     int? weight = itemData[0][0].weight as int?;
-    List<List<dynamic>> categoryList = [[]];
-    List<List<dynamic>> attributeList = [[]];
+    List<List<dynamic>> categoryList = [];
+    List<List<dynamic>> attributeList = [];
     itemData[0][1].forEach((CategoryData item) {
       List<dynamic> subList = [];
       subList.add(item.type);
@@ -229,46 +353,10 @@ class AppDatabase extends _$AppDatabase {
       attributeList: attributeList,
     );
   }
-}
-// #endregion
+  //#endregion
 
 
-// Future<List> getGear(int itemId) async {
-//   List list = [];
-//   String type = await getType(itemId);
-//   if (type == "climbing") {
-
-//   }
-//   return list;
-// }
-
-// #region Master Gear Getters:
-//   Future<String> getName(int itemId) =>
-//     (select(masterGear)..where((g) => g.itemId.equals(itemId))).map((row) => row.name).getSingle();
-
-//   Future<String> getType(int itemId) =>
-//     (select(masterGear)..where((g) => g.itemId.equals(itemId))).map((row) => row.type).getSingle();
-
-//   Future<int> getQuantity(int itemId) =>
-//     (select(masterGear)..where((g) => g.itemId.equals(itemId))).map((row) => row.quantity).getSingle();
-
-// // weight stored in tengths of a gram (int)
-//   Future<int> getWeight(int itemId) =>
-//     (select(masterGear)..where((g) => g.itemId.equals(itemId))).map((row) => row.weight).getSingle();
-
-// // price in cents
-//   Future<int> getPrice(int itemId) =>
-//     (select(masterGear)..where((g) => g.itemId.equals(itemId))).map((row) => row.price).getSingle();
-
-//   // Get all gear of type
-//   Future<List<MasterGearData>> getMasterGearByType(String type) =>
-//       (select(masterGear)..where((g) => g.type.equals(type))).get();
-
-//   // Get all master gear items
-//   Future<List<MasterGearData>> getAllMasterGear() => select(masterGear).get();
-// // #endregion
-
-// // #region Master Gear Setters:
+//#region Setters
 
 //   Future<void> setName(int itemId, String name) =>
 //     (update(masterGear)..where((g) => g.itemId.equals(itemId))).write(MasterGearCompanion(name: Value(name)));
@@ -300,20 +388,9 @@ class AppDatabase extends _$AppDatabase {
 //    else {setQuantity(itemId, newQuantity);}
 //   }
 
-// // #endregion
+//#endregion
+}
 
-//   // Watch master gear for reactive UI updates
-//   Stream<List<MasterGearData>> watchAllMasterGear() =>
-//       select(masterGear).watch();
-
-//   // Watch gear by type for reactive UI updates
-//   Stream<List<MasterGearData>> watchMasterGearByType(String type) =>
-//       (select(masterGear)..where((g) => g.type.equals(type))).watch();
-
-//   // Update master gear
-//   Future<bool> updateMasterGear(MasterGearData gear) =>
-//       update(masterGear).replace(gear);
-// }
 
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
