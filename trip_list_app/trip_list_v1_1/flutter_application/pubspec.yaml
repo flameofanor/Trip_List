@@ -41,6 +41,7 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
+  flutter_svg: ^1.1.6
 
 dev_dependencies:
   flutter_test:
@@ -66,6 +67,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/database/triplist.db
+    - assets/icons/
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
@@ -77,11 +79,18 @@ flutter:
   # For details regarding adding assets from package dependencies, see
   # https://flutter.dev/to/asset-from-package
 
-
   fonts:
     - family: Roboto
       fonts: 
-        - asset: fonts/Roboto-Regular.ttf
+        # - asset: fonts/Roboto-Regular.ttf
+        # - asset: fonts/Roboto-Bold.ttf
+        # - asset: fonts/Roboto-BoldItalic.ttf
+        # - asset: fonts/Roboto-Light.ttf
+        # - asset: fonts/Roboto-LightItalic.ttf
+        # - asset: fonts/Roboto-Black.ttf
+        # - asset: fonts/Roboto-BlackItalic.ttf
+        - asset: fonts/Roboto-VariableFont_wdth,wght.ttf
+
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
   # "family" key with the font family name, and a "fonts" key with a
