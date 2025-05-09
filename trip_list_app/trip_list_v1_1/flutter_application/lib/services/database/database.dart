@@ -41,6 +41,39 @@ enum GearTypeClimbing {
 
 // #endregion
 
+// // Gear Item  Probably dont need this actually
+// /// Only stores [Master] info attached to an itemId
+// /// [Master] = [itemId], [name], [quantity], [weight]
+// /// can call getFull to return a [GearItemFull]
+// class GearItem {
+//   late final int itemId;
+//   late final String name;
+//   late final int quantity;
+//   late final int? weight;
+
+//   // Constructor
+//   GearItem({
+// 	required this.itemId,
+// 	required this.name,
+// 	required this.quantity,
+// 	required this.weight,
+//   });
+
+//   int getItemId() => itemId;
+//   String getName() => name;
+//   int getQuantity() => quantity;
+//   int? getWeight() => weight;
+  
+//   GearItemFull getFull() async {
+// 	return await AppDatabase.getGearItemFull(itemId);
+//   }
+
+
+
+
+
+
+// Gear Item
 /// Stores all information attached to an itemId
 /// [Master] = [itemId], [name], [quantity], [weight]
 ///
@@ -62,7 +95,7 @@ class GearItem {
     required this.itemId,
     required this.name,
     required this.quantity,
-    this.weight,
+    required this.weight,
     required List<List<dynamic>> categoryList,
     required List<List<dynamic>> attributeList,
   }) {
@@ -113,10 +146,13 @@ class Attribute extends Table {
 
 @DriftDatabase(tables: [Master, Category, Attribute])
 class AppDatabase extends _$AppDatabase {
+  
   AppDatabase() : super(_openConnection());
+
 
   @override
   int get schemaVersion => 1;
+
   //#region Adders
   /// Add gear to master table
   /// returns [Master.itemId] of new item
@@ -321,6 +357,7 @@ class AppDatabase extends _$AppDatabase {
     return items;
   }
 
+
   /// Returns a [GearItem] object
   Future<GearItem> getGearItem(int id) async {
     List<List<dynamic>> itemData = await getItem(id);
@@ -358,6 +395,7 @@ class AppDatabase extends _$AppDatabase {
 
 //#region Setters
 
+
 //   Future<void> setName(int itemId, String name) =>
 //     (update(masterGear)..where((g) => g.itemId.equals(itemId))).write(MasterGearCompanion(name: Value(name)));
 
@@ -389,8 +427,23 @@ class AppDatabase extends _$AppDatabase {
 //   }
 
 //#endregion
+
+
+//#region Stream Updates
+Future<List<GearItem>> convertMasterToGearItems(List<MasterData> masterItems) async {
+  final futures = masterItems.map((item) => getGearItem(item.itemId)).toList();
+  return await Future.wait(futures);
 }
 
+/// returns a stream list of all [GearItem] in the database
+  Stream<List<GearItem>> watchAllMasterGear() =>
+    select(master).watch().asyncMap((masterItems) => convertMasterToGearItems(masterItems));
+
+  
+
+//#endregion
+
+}
 
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
