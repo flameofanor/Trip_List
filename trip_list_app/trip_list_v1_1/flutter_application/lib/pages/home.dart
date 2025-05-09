@@ -8,7 +8,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'TripList',
+          'TripList v1.2',
           style: TextStyle(
             color: Colors.black,
             fontSize: 18,
