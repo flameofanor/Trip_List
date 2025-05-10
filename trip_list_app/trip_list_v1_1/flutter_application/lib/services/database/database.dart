@@ -1,5 +1,7 @@
 // lib/database/database.dart
 import 'dart:io';
+import 'dart:collection';
+import 'package:synchronized/synchronized.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter/foundation.dart';
@@ -41,32 +43,6 @@ enum GearTypeClimbing {
 
 // #endregion
 
-// // Gear Item  Probably dont need this actually
-// /// Only stores [Master] info attached to an itemId
-// /// [Master] = [itemId], [name], [quantity], [weight]
-// /// can call getFull to return a [GearItemFull]
-// class GearItem {
-//   late final int itemId;
-//   late final String name;
-//   late final int quantity;
-//   late final int? weight;
-
-//   // Constructor
-//   GearItem({
-// 	required this.itemId,
-// 	required this.name,
-// 	required this.quantity,
-// 	required this.weight,
-//   });
-
-//   int getItemId() => itemId;
-//   String getName() => name;
-//   int getQuantity() => quantity;
-//   int? getWeight() => weight;
-  
-//   GearItemFull getFull() async {
-// 	return await AppDatabase.getGearItemFull(itemId);
-//   }
 
 
 
@@ -153,6 +129,53 @@ class AppDatabase extends _$AppDatabase {
   @override
   int get schemaVersion => 1;
 
+  //#region sorted searching by itemId
+
+  /// stays sorted :)
+  SplayTreeMap<int, GearItem> gearItemSearch = SplayTreeMap<int, GearItem>();
+  
+  final searchLock = Lock();
+
+  ///- sets [gearItemSearch]
+  ///- used once during app loading
+  void setGearItemSearch() async {
+    await searchLock.synchronized(() async {
+      List<GearItem> gearItemSorted = [];
+      gearItemSorted = await getGearItems(await getMasterId());
+      for (GearItem item in gearItemSorted) {
+      gearItemSearch[item.itemId] = item;
+      }
+    });
+  }
+
+  void addGearItemSearh(GearItem item) async {
+    await searchLock.synchronized(() {
+      gearItemSearch[item.itemId] = item;
+    });
+  }
+
+  Future<GearItem?> removeGearItemSearch(int id) async {
+    GearItem? item;
+    await searchLock.synchronized(() {
+      item = gearItemSearch.remove(id);
+    });
+    return item;
+  }
+
+  Future<GearItem?> searchGearItem(int id) async {
+    GearItem? item;
+    await searchLock.synchronized(() {
+      item = gearItemSearch[id];
+    });
+    return item;
+  }
+
+
+  
+
+
+  //#endregion
+
   //#region Adders
   /// Add gear to master table
   /// returns [Master.itemId] of new item
@@ -210,9 +233,11 @@ class AppDatabase extends _$AppDatabase {
     return (select(master)..where((tbl) => tbl.itemId.equals(id))).get();
   }
 
-  /// gets all [Master.itemId] in a list
+  /// gets all [Master.itemId] in an ordered list
   Future<List<int>> getMasterId() {
-    return (select(master).map((row) => row.itemId)).get();
+    final query = select(master);
+    query.orderBy([(t) => OrderingTerm(expression: t.itemId)]);
+    return query.map((row) => row.itemId).get();
   }
 
   /// if no [id] is given, returns all categories
