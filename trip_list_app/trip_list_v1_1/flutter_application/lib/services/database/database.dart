@@ -129,7 +129,8 @@ class AppDatabase extends _$AppDatabase {
   @override
   int get schemaVersion => 1;
 
-  //#region sorted searching by itemId
+  //#region Searching
+
 
   /// stays sorted :)
   SplayTreeMap<int, GearItem> gearItemSearch = SplayTreeMap<int, GearItem>();
@@ -162,6 +163,7 @@ class AppDatabase extends _$AppDatabase {
     return item;
   }
 
+	/// gets single [GearItem] with [GearItem.itemId] == [id]
   Future<GearItem?> searchGearItem(int id) async {
     GearItem? item;
     await searchLock.synchronized(() {
@@ -170,9 +172,42 @@ class AppDatabase extends _$AppDatabase {
     return item;
   }
 
+	/// gets all [GearItem] in set [ids]
+    Future<Set<GearItem?>> searchGearItems(Set<int> ids) async {
+    Set<GearItem?> items = {};
+    await searchLock.synchronized(() async {
+      for (int id in ids) {
+		items.add(await searchGearItem(id));
+	  }
+    });
+    return items;
+  }
 
-  
-
+ /// - searches [Master] for name.contains([target])
+ /// - searches [Category] for value.contains([target])
+ /// - searches [Attribute] for value.contains([target]) and name.contains([target])
+ /// returns a set of [Master.itemId] that satisfies any of these conditions, possibly an empty set
+ /// call [gearSearch] to 
+  Future<Set<int>> gearSearch(String target) async {
+	Set<int> resultSet = {};
+    //search master name
+	final queryMaster = select(master)..where((tbl) => tbl.name.contains(target));
+	var resultsMaster = await queryMaster.get();
+	resultSet.addAll(resultsMaster.map((row) => row.itemId).toSet());
+	//search category value
+	final queryCategory = select(category)..where((tbl) => tbl.value.contains(target));
+	var resultsCategory = await queryCategory.get();
+	resultSet.addAll(resultsCategory.map((row) => row.itemId).toSet());
+	//search attribute name
+	final queryAttributeName = select(attribute)..where((tbl) => tbl.name.contains(target));
+	var resultsAttributeName = await queryAttributeName.get();
+	resultSet.addAll(resultsAttributeName.map((row) => row.itemId).toSet());
+	//search attribute value
+	final queryAttributeValue = select(attribute)..where((tbl) => tbl.value.toString().contains(target) as Expression<bool>);
+	var resultsAttributeValue = await queryAttributeValue.get();
+	resultSet.addAll(resultsAttributeValue.map((row) => row.itemId).toSet());
+	return resultSet;
+  }
 
   //#endregion
 
@@ -233,11 +268,12 @@ class AppDatabase extends _$AppDatabase {
     return (select(master)..where((tbl) => tbl.itemId.equals(id))).get();
   }
 
-  /// gets all [Master.itemId] in an ordered list
-  Future<List<int>> getMasterId() {
+  /// gets all [Master.itemId] in an ordered set
+  Future<Set<int>> getMasterId() async {
     final query = select(master);
     query.orderBy([(t) => OrderingTerm(expression: t.itemId)]);
-    return query.map((row) => row.itemId).get();
+	final result = await query.map((row) => row.itemId).get();
+    return result.toSet();
   }
 
   /// if no [id] is given, returns all categories
@@ -284,10 +320,10 @@ class AppDatabase extends _$AppDatabase {
   ]) async {
     List<GearItem> gearItems = [];
     if (type != null && value != null) {
-      gearItems = await getGearItems(
-        await (select(category)
-          ..where((g) => g.type.equals(type))).map((row) => row.itemId).get(),
-      );
+      gearItems = await getGearItems( 
+		(await (select(category)
+          ..where((g) => g.type.equals(type))).map((row) => row.itemId).get()).toSet()
+	  );
       List<GearItem> gearItemsReturn = [];
       for (GearItem gear in gearItems) {
         List<List<dynamic>> categoryList = gear.getCategoryList();
@@ -302,14 +338,14 @@ class AppDatabase extends _$AppDatabase {
     }
     if (type != null) {
       return getGearItems(
-        await (select(category)
-          ..where((g) => g.type.equals(type))).map((row) => row.itemId).get(),
+        (await (select(category)
+          ..where((g) => g.type.equals(type))).map((row) => row.itemId).get()).toSet()
       );
     }
     if (value != null) {
       return getGearItems(
-        await (select(category)
-          ..where((g) => g.value.equals(value))).map((row) => row.itemId).get(),
+        (await (select(category)
+          ..where((g) => g.value.equals(value))).map((row) => row.itemId).get()).toSet()
       );
     }
     return [];
@@ -331,8 +367,8 @@ class AppDatabase extends _$AppDatabase {
 
     if (type != null && value != null) {
       gearItems = await getGearItems(
-        await (select(attribute)
-          ..where((a) => a.type.equals(type))).map((row) => row.itemId).get(),
+        (await (select(attribute)
+          ..where((a) => a.type.equals(type))).map((row) => row.itemId).get()).toSet()
       );
 
       List<GearItem> gearItemsReturn = [];
@@ -349,14 +385,14 @@ class AppDatabase extends _$AppDatabase {
     }
     if (type != null) {
       return getGearItems(
-        await (select(attribute)
-          ..where((a) => a.type.equals(type))).map((row) => row.itemId).get(),
+        (await (select(attribute)
+          ..where((a) => a.type.equals(type))).map((row) => row.itemId).get()).toSet()
       );
     }
     if (value != null) {
       return getGearItems(
-        await (select(attribute)
-          ..where((a) => a.value.equals(value))).map((row) => row.itemId).get(),
+        (await (select(attribute)
+          ..where((a) => a.value.equals(value))).map((row) => row.itemId).get()).toSet()
       );
     }
     return [];
@@ -372,8 +408,8 @@ class AppDatabase extends _$AppDatabase {
 
   /// - takes a list of [ids] which can have duplicates, and produces a list of unique [GearItem]
   /// - if no input is given, returns all [GearItem] in [Master]
-  Future<List<GearItem>> getGearItems([List<int>? ids]) async {
-    ids ??= await getMasterId();
+  Future<List<GearItem>> getGearItems([Set<int>? ids]) async {
+    ids ??= (await getMasterId());
     List<GearItem> items = [];
     List<int> idsUnique = ids.toSet().toList();
     for (var id in idsUnique) {
