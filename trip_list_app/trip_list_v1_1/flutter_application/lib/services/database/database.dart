@@ -60,31 +60,45 @@ enum GearTypeClimbing {
 ///
 /// [weight], [categoryList], and [attributeList] are nullable fields
 class GearItem {
-  late final int itemId;
-  late final String name;
-  late final int quantity;
-  late final int? weight;
-  late final List<List<dynamic>> categoryList;
-  late final List<List<dynamic>> attributeList;
+  late int? itemId;
+  late String name;
+  late int quantity;
+  late int? weight;
+  late List<List<dynamic>>? categoryList;
+  late List<List<dynamic>>? attributeList;
   // Constuctor
   GearItem({
-    required this.itemId,
+    this.itemId,
     required this.name,
     required this.quantity,
-    required this.weight,
-    required List<List<dynamic>> categoryList,
-    required List<List<dynamic>> attributeList,
-  }) {
-    this.categoryList = List<List<dynamic>>.unmodifiable(categoryList);
-    this.attributeList = List<List<dynamic>>.unmodifiable(attributeList);
-  }
+    this.weight,
+    List<List<dynamic>>? categoryList,
+    List<List<dynamic>>? attributeList,
+  });
   // Getters
-  int getItemId() => itemId;
+  int? getItemId() => itemId;
   String getName() => name;
   int getQuantity() => quantity;
   int? getWeight() => weight;
-  List<List<dynamic>> getCategoryList() => categoryList;
-  List<List<dynamic>> getAttributeList() => attributeList;
+  List<List<dynamic>> getCategoryList() => categoryList ?? [];
+  List<List<dynamic>> getAttributeList() => attributeList ?? [];
+
+  // Setters
+  void setItemId(int itemId) {
+	this.itemId = itemId;
+  }
+  void setName(String name) {
+  this.name = name;
+  }
+
+void setQuantity(int quantity) {
+  this.quantity = quantity;
+}
+
+void setWeight(int? weight) {
+  this.weight = weight;
+}
+
 }
 
 // #region tables
@@ -123,8 +137,10 @@ class Attribute extends Table {
 @DriftDatabase(tables: [Master, Category, Attribute])
 class AppDatabase extends _$AppDatabase {
   
-  AppDatabase() : super(_openConnection());
+  AppDatabase._() : super(_openConnection());
 
+  static final AppDatabase _database = AppDatabase._();
+  factory AppDatabase() => _database;
 
   @override
   int get schemaVersion => 1;
@@ -144,15 +160,24 @@ class AppDatabase extends _$AppDatabase {
       List<GearItem> gearItemSorted = [];
       gearItemSorted = await getGearItems(await getMasterId());
       for (GearItem item in gearItemSorted) {
-      gearItemSearch[item.itemId] = item;
-      }
+		if (item.itemId != null) {
+			final id = item.itemId!;
+			gearItemSearch[id] = item;
+		}
+	  }
     });
   }
 
-  void addGearItemSearh(GearItem item) async {
+/// 
+  Future<bool> addGearItemSearh(GearItem item) async {
     await searchLock.synchronized(() {
-      gearItemSearch[item.itemId] = item;
+      	if (item.itemId != null) {
+			final id = item.itemId!;
+			gearItemSearch[id] = item;
+			return true;
+		}
     });
+	return false;
   }
 
   Future<GearItem?> removeGearItemSearch(int id) async {
@@ -212,6 +237,23 @@ class AppDatabase extends _$AppDatabase {
   //#endregion
 
   //#region Adders
+
+  /// add a new [GearItem] to database and to the search [SplayTreeMap], [gearItemSearch]
+  /// - returns [GearItem.itemId]
+  Future<int> addGearItem(GearItem newItem) async {
+	int id = await addGearMaster(newItem.getName(), newItem.getQuantity(), newItem.getWeight());
+	newItem.setItemId(id);
+	List<List<dynamic>> categoryList = newItem.getCategoryList();
+	List<List<dynamic>> attributeList = newItem.getAttributeList();
+	for (List<dynamic> category in categoryList) {
+		addGearCategory(id, category[0].toString(), category[1]?.toString(), category[2]);
+	}
+	for (List<dynamic> attribute in attributeList) {
+		addGearAttributes(id, attribute[0].toString(), attribute[1]?.toString(), attribute[2]);
+	}
+	return id;
+  }
+
   /// Add gear to master table
   /// returns [Master.itemId] of new item
   Future<int> addGearMaster(String name, int quantity, int? weight) {
@@ -287,10 +329,10 @@ class AppDatabase extends _$AppDatabase {
   /// - returns [List] of [String]
   /// - contains all values for category rows in [GearItem]
   List<String> getCategoryValues(GearItem item) {
-    if (item.categoryList.isEmpty) {
+    if (item.getCategoryList().isEmpty) {
       return [];
     }
-    return item.categoryList
+    return item.getCategoryList()
         .where(
           (subList) => subList.length > 2,
         ) // Ensure the sublist has an index 2

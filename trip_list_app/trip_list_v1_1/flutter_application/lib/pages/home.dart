@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:flutter_application/pages/gear_page.dart";
 import "package:flutter_svg/svg.dart";
 import 'package:flutter_svg/flutter_svg.dart';
 import "package:path/path.dart";
@@ -7,10 +8,12 @@ class HomePage extends StatelessWidget {
   HomePage({super.key});
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  late BuildContext context;
 
 
   @override
   Widget build(BuildContext context) {
+    this.context = context;
     return Scaffold(
       key: scaffoldKey,
       appBar: appBar(scaffoldKey),
@@ -35,7 +38,10 @@ class HomePage extends StatelessWidget {
               ),
               ),
             onTap: () {
-              
+                Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => GearPage()),
+  );
             }
           )
         ],
@@ -70,11 +76,11 @@ class HomePage extends StatelessWidget {
             color: Colors.green,
             borderRadius: BorderRadius.circular(10),
           ),
-          child: SvgPicture.asset(
-            'assets/icons/settings.svg', 
-            height: 40,
-            color: Colors.black,
-            ),
+          // child: SvgPicture.asset(
+          //   'assets/icons/settings.svg', 
+          //   height: 40,
+          //   color: Colors.black,
+          //   ),
           ),
       ),
         // Menu Icon
