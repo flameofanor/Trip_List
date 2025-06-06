@@ -168,7 +168,7 @@ class AppDatabase extends _$AppDatabase {
     });
   }
 
-/// 
+/// adds an item to the search list. Used when a new item is created 
   Future<bool> addGearItemSearh(GearItem item) async {
     await searchLock.synchronized(() {
       	if (item.itemId != null) {
@@ -228,9 +228,9 @@ class AppDatabase extends _$AppDatabase {
 	var resultsAttributeName = await queryAttributeName.get();
 	resultSet.addAll(resultsAttributeName.map((row) => row.itemId).toSet());
 	//search attribute value
-	final queryAttributeValue = select(attribute)..where((tbl) => tbl.value.toString().contains(target) as Expression<bool>);
-	var resultsAttributeValue = await queryAttributeValue.get();
-	resultSet.addAll(resultsAttributeValue.map((row) => row.itemId).toSet());
+	// final queryAttributeValue = select(attribute)..where((tbl) => tbl.value.contains(target)); /// fix this
+	// var resultsAttributeValue = await queryAttributeValue.get();
+	// resultSet.addAll(resultsAttributeValue.map((row) => row.itemId).toSet());
 	return resultSet;
   }
 
