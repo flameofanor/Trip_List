@@ -60,7 +60,7 @@ enum GearTypeClimbing {
 ///
 /// [weight], [categoryList], and [attributeList] are nullable fields
 class GearItem {
-  late int? itemId;
+  late int itemId;
   late String name;
   late int quantity;
   late int? weight;
@@ -68,7 +68,7 @@ class GearItem {
   late List<List<dynamic>>? attributeList;
   // Constuctor
   GearItem({
-    this.itemId,
+    required this.itemId,
     required this.name,
     required this.quantity,
     this.weight,
@@ -533,14 +533,14 @@ class AppDatabase extends _$AppDatabase {
 
 
 //#region Stream Updates
-Future<List<GearItem>> convertMasterToGearItems(List<MasterData> masterItems) async {
-  final futures = masterItems.map((item) => getGearItem(item.itemId)).toList();
-  return await Future.wait(futures);
-}
+// Future<List<GearItem>> convertMasterToGearItems(List<MasterData> masterItems) async {
+//   final futures = masterItems.map((item) => getGearItem(item.itemId)).toList();
+//   return await Future.wait(futures);
+// }
 
 /// returns a stream list of all [GearItem] in the database
-  Stream<List<GearItem>> watchAllMasterGear() =>
-    select(master).watch().asyncMap((masterItems) => convertMasterToGearItems(masterItems));
+  // Stream<List<GearItem>> watchAllMasterGear() =>
+  //   select(master).watch().asyncMap((masterItems) => convertMasterToGearItems(masterItems));
 
   
 
@@ -553,6 +553,7 @@ LazyDatabase _openConnection() {
     // Get database location
 
     final dbFolder = await getApplicationDocumentsDirectory();
+    //final dbFolder = '/Users/willcash/Documents/TripList_Dev';
     final file = File(p.join(dbFolder.path, 'app.db'));
 
     if (kDebugMode) {
