@@ -28,6 +28,7 @@ class GearPageState extends State<GearPage> {
   final searchController = TextEditingController();
   Set<String> activeTags = {};
   List<GearItem> activeItems = [];
+  Set<int> activeId = {};
 
   @override
   Widget build(BuildContext context) {
@@ -42,64 +43,107 @@ class GearPageState extends State<GearPage> {
   Widget body(GlobalKey<ScaffoldState> key) {
     return Column(
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: TextField(
-                controller: searchController,
-                decoration: InputDecoration(
-                  hintText: 'name, attribute, category... (search to add tag)',
-                  border: OutlineInputBorder(),
+        SizedBox(
+          height: 60,
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: searchController,
+                  decoration: InputDecoration(
+                    hintText:
+                        'name, attribute, category... (search to add tag)',
+                    border: OutlineInputBorder(),
+                  ),
+                  onChanged: (value) async {
+                    activeId = await db.gearSearch(value);
+                  }, //seaches database for input
+                  //                onSubmitted: addTag,
                 ),
-                onSubmitted: addTag,
               ),
-            ),
-          ],
+            ],
+          ),
         ),
 
-        Wrap(
-          spacing: 8,
-          children:
-              activeTags
-                  .map(
-                    (tag) =>
-                        Chip(label: Text(tag), onDeleted: () => removeTag(tag)),
-                  )
-                  .toList(),
-        ),
+        // Wrap(
+        //   spacing: 8,
+        //   children:
+        //     //   activeTags
+        //     //       .map(
+        //     //         (tag) =>
+        //     //           //  Chip(label: Text(tag), onDeleted: () => removeTag(tag)),
+        //     //       )
+        //     //       .toList(),
+        // ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: activeId.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text(tempTitle()),
+                //title: FutureBuilder<GearItem?>(
+                //future: db.searchGearItem(activeId.elementAt(index)),
+                //builder: (context, snapshot) {
 
-		Expanded(
-      child: ListView.builder(
-        itemCount: activeItems.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(activeItems[index].name),
-            trailing: Text(activeItems[index].quantity.toString()),
-          );
-        },
-      ),
-    ),
+                // if (snapshot.hasData && snapshot.data != null) {
+                // 	print("checking index: $index");
+                // 	return Text(snapshot.data!.getName());
+                // }
+                // return Text('Item not found');
+                //},
+                //),
+                //trailing: Text(activeItems[index].quantity.toString()),
+              );
+            },
+          ),
+        ),
+        // Spacer(),
+        SizedBox(
+          height: 50,
+
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              OutlinedButton(
+                onPressed: () {},
+                style: OutlinedButton.styleFrom(
+                  shape: const CircleBorder(),
+                  padding: const EdgeInsets.all(12),
+                ),
+                child: SvgPicture.asset(
+                  'assets/icons/add.svg',
+                  width: 40,
+                  height: 40,
+                ),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
 
   // add the item adder button! plus button in lower corner, goes to new page
 
-  void addTag(String tag) {
-    if (tag.isNotEmpty && !activeTags.contains(tag)) {
-      activeTags.add(tag);
-      searchController.clear();
-    }
-  }
+  //   void addTag(String tag) {
+  //     if (tag.isNotEmpty && !activeTags.contains(tag)) {
+  //       activeTags.add(tag);
+  //       searchController.clear();
+  //     }
+  //   }
 
-  void removeTag(String tag) {
-    if (tag.isNotEmpty) {
-      activeTags.remove(tag);
-    }
-  }
+  //   void removeTag(String tag) {
+  //     if (tag.isNotEmpty) {
+  //       activeTags.remove(tag);
+  //     }
+  //   }
 
-  void clearTags() {
-    activeTags.clear();
+  //   void clearTags() {
+  //     activeTags.clear();
+  //   }
+
+  String tempTitle() {
+    return "smeep";
   }
 
   AppBar appBar(GlobalKey<ScaffoldState> key) {
