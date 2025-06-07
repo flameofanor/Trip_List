@@ -475,10 +475,8 @@ LazyDatabase _openConnection() {
     if (kDebugMode) {
       print('Database location: ${file.path}');
     }
-
-    // Option to copy your development database from assets
-    // Uncomment this if you want to include your prebuilt database
-    if (!await file.exists()) {
+    //if (!await file.exists()) {
+    if (1==1) {  //1==1 will always delete the old database and copy a new one from assets
       // Copy from assets
       final ByteData data = await rootBundle.load(
         'assets/database/triplist.db',
