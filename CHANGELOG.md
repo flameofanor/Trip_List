@@ -1,5 +1,11 @@
 # TripList version history and development
 
+## v1.3 (June 7, 2025)
+Moving to version 1.3. I will be scaling back the project to get a minimum viable product up and running, I've been spending too much time working on features that aren't critical to the function of the app but the app doesn't work yet.
+See [README](./README.md) for MVP goals
+
+Current homepage and functional menu:
+![homepage](docs/development/images/v1_3/homepage.png)
 
 ## v1.2 (May 6, 2025)
 Version 1.2 of triplist is now under development!
