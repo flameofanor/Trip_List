@@ -16,37 +16,6 @@ import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 
 part 'database.g.dart';
 
-// #region gear types
-enum GearType {
-  climbing;
-  //camping,
-  //clothing;
-
-  static GearType fromString(String value) {
-    return GearType.values.firstWhere((type) => type.name == value);
-  }
-}
-
-enum GearTypeClimbing {
-  rope,
-  protection,
-  runner,
-  ropework,
-  hardware,
-  iceaxe,
-  personal;
-
-  static GearTypeClimbing fromString(String value) {
-    return GearTypeClimbing.values.firstWhere((type) => type.name == value);
-  }
-}
-
-// #endregion
-
-
-
-
-
 
 
 // Gear Item
@@ -494,58 +463,6 @@ class AppDatabase extends _$AppDatabase {
     );
   }
   //#endregion
-
-
-//#region Setters
-
-
-//   Future<void> setName(int itemId, String name) =>
-//     (update(masterGear)..where((g) => g.itemId.equals(itemId))).write(MasterGearCompanion(name: Value(name)));
-
-//   Future<void> setType(int itemId, String type) =>
-//     (update(masterGear)..where((g) => g.itemId.equals(itemId))).write(MasterGearCompanion(type: Value(type)));
-
-//   Future<int> setQuantity(int itemId, int quantity) =>
-//     (update(masterGear)..where((g) => g.itemId.equals(itemId))).write(MasterGearCompanion(quantity: Value(quantity)));
-
-//   Future<void> setWeight(int itemId, int weight) =>
-//     (update(masterGear)..where((g) => g.itemId.equals(itemId))).write(MasterGearCompanion(weight: Value(weight)));
-
-//   Future<void> setPrice(int itemId, int price) =>
-//     (update(masterGear)..where((g) => g.itemId.equals(itemId))).write(MasterGearCompanion(price: Value(price)));
-
-//   /// removes item from master gear table (todo: make hardDelete() remove item from all other tables)
-//   Future<int> hardDelete(int itemId) =>
-//       (delete(masterGear)..where((g) => g.itemId.equals(itemId))).go();
-
-//   /// set quantity to zero
-//Future<void> softDelete(int itemId) =>
-
-//   /// \+ int to add, - int to subtract
-//   /// + if quantity would be zero or negative, soft deletes item instead
-//   Future<void> changeQuantity(int itemId, int quanitityChange) async {
-//    int newQuantity = quanitityChange + await getQuantity(itemId);
-//    if (newQuantity <= 0) {softDelete(itemId);}
-//    else {setQuantity(itemId, newQuantity);}
-//   }
-
-//#endregion
-
-
-//#region Stream Updates
-// Future<List<GearItem>> convertMasterToGearItems(List<MasterData> masterItems) async {
-//   final futures = masterItems.map((item) => getGearItem(item.itemId)).toList();
-//   return await Future.wait(futures);
-// }
-
-/// returns a stream list of all [GearItem] in the database
-  // Stream<List<GearItem>> watchAllMasterGear() =>
-  //   select(master).watch().asyncMap((masterItems) => convertMasterToGearItems(masterItems));
-
-  
-
-//#endregion
-
 }
 
 LazyDatabase _openConnection() {
@@ -553,7 +470,6 @@ LazyDatabase _openConnection() {
     // Get database location
 
     final dbFolder = await getApplicationDocumentsDirectory();
-    //final dbFolder = '/Users/willcash/Documents/TripList_Dev';
     final file = File(p.join(dbFolder.path, 'app.db'));
 
     if (kDebugMode) {

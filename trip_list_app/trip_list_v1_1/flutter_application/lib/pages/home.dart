@@ -76,11 +76,7 @@ class HomePage extends StatelessWidget {
             color: Colors.green,
             borderRadius: BorderRadius.circular(10),
           ),
-          // child: SvgPicture.asset(
-          //   'assets/icons/settings.svg', 
-          //   height: 40,
-          //   color: Colors.black,
-          //   ),
+
           ),
       ),
         // Menu Icon

@@ -65,34 +65,13 @@ class GearPageState extends State<GearPage> {
           ),
         ),
 
-        // Wrap(
-        //   spacing: 8,
-        //   children:
-        //     //   activeTags
-        //     //       .map(
-        //     //         (tag) =>
-        //     //           //  Chip(label: Text(tag), onDeleted: () => removeTag(tag)),
-        //     //       )
-        //     //       .toList(),
-        // ),
         Expanded(
           child: ListView.builder(
             itemCount: activeId.length,
             itemBuilder: (context, index) {
               return ListTile(
                 title: Text(tempTitle()),
-                //title: FutureBuilder<GearItem?>(
-                //future: db.searchGearItem(activeId.elementAt(index)),
-                //builder: (context, snapshot) {
 
-                // if (snapshot.hasData && snapshot.data != null) {
-                // 	print("checking index: $index");
-                // 	return Text(snapshot.data!.getName());
-                // }
-                // return Text('Item not found');
-                //},
-                //),
-                //trailing: Text(activeItems[index].quantity.toString()),
               );
             },
           ),
@@ -123,24 +102,7 @@ class GearPageState extends State<GearPage> {
     );
   }
 
-  // add the item adder button! plus button in lower corner, goes to new page
 
-  //   void addTag(String tag) {
-  //     if (tag.isNotEmpty && !activeTags.contains(tag)) {
-  //       activeTags.add(tag);
-  //       searchController.clear();
-  //     }
-  //   }
-
-  //   void removeTag(String tag) {
-  //     if (tag.isNotEmpty) {
-  //       activeTags.remove(tag);
-  //     }
-  //   }
-
-  //   void clearTags() {
-  //     activeTags.clear();
-  //   }
 
   String tempTitle() {
     return "smeep";
